@@ -1,0 +1,26 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 26-Feb-2018, 17:47:40
+    Author     : Rowan
+*/
+
+
+body {
+  background: #0f1230;
+  background: radial-gradient(ellipse at center, #0f1230 0%, #0e0b28 100%);
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+#stars {
+   display: block;
+   position: absolute;
+   width: 100%;
+   height: 100vh;
+   z-index: -1;
+   top: 0;
+}
