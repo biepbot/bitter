@@ -9,6 +9,7 @@ import com.biepbot.barking.Validator;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlTransient;
@@ -17,12 +18,12 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Rowan
  */
-@Entity
+@Entity(name="Account")
 public class User implements Serializable
 {
     Validator val;
     
-    @Id
+    
     @XmlTransient
     private String name;
     @XmlTransient
@@ -42,6 +43,9 @@ public class User implements Serializable
     @OneToMany
     @XmlTransient
     private List<User> blockedUsers;
+    
+    @Id @GeneratedValue
+    private Long id;
 
     public User()
     {
@@ -123,6 +127,16 @@ public class User implements Serializable
     public List<User> getBlockedUsers()
     {
         return blockedUsers;
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
     }
     
     

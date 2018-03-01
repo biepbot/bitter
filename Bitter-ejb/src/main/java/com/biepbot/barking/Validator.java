@@ -6,6 +6,7 @@
 package com.biepbot.barking;
 
 import com.biepbot.base.Bark;
+import java.io.Serializable;
 import javax.ejb.Singleton;
 
 /**
@@ -13,7 +14,7 @@ import javax.ejb.Singleton;
  * @author Rowan
  */
 @Singleton
-public class Validator
+public class Validator implements Serializable
 {
     private final int MAX_SIZE = 280;
     
