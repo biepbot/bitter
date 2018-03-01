@@ -9,7 +9,6 @@ import com.biepbot.base.Bark;
 import com.biepbot.base.User;
 import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -29,9 +28,6 @@ import javax.ws.rs.core.MediaType;
 @Path("/username")
 public class UserBean implements Serializable 
 {
-    private List<User> allUsers;
-    private static final Logger logger = Logger.getLogger("javaeetutorial.rsvp.ejb.StatusBean");
-
     @PersistenceContext
     private EntityManager em;
     
