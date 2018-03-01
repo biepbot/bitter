@@ -29,9 +29,39 @@
         <div class="limit-3">
             <div class="small-box">
                 <div class="profile-box">
-                    <div class="header"></div>
-                    <div class="profile-info"></div>
+                     <!-- test data -->
+                     <!-- test data -->
+                     <!-- test data -->
+                     <div class="header">
+                         <img src="https://pbs.twimg.com/profile_banners/3126552135/1490991020/600x200"/>
+                     </div>
+                     <div class="profile-info">
+                         <div class="username">
+                            <img src="https://cdn.discordapp.com/emojis/414037045560999956.png?v=1"/>
+                            <div>
+                                <p>Biepbot</p>
+                                <p>@biepbot</p>
+                            </div>
+                         </div>
+                         <div class="major">
+                            <div class="minor">
+                                <p>Barks</p>
+                                <p>3</p>
+                            </div>
+                            <div class="minor">
+                                <p>Following</p>
+                                <p>19</p>
+                            </div>
+                            <div class="minor">
+                                <p>Followers</p>
+                                <p>2.591</p>
+                            </div>
+                         </div>
+                     </div>
                 </div>
+                     <!-- test data -->
+                     <!-- test data -->
+                     <!-- test data -->
                 <div class="trending-box"></div>
             </div>
             <div class="long-contents">
@@ -39,7 +69,9 @@
                      <input type="text" name="bark" class="form-control" id="bark" placeholder="What's up?">
                 </div>
                 
-                <!-- test data -->
+                     <!-- test data -->
+                     <!-- test data -->
+                     <!-- test data -->
                 <div class="bark">
                     <div class="bark-image">
                         <img src="https://cdn.discordapp.com/emojis/409023321888522246.png?v=1"/>

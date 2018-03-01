@@ -44,17 +44,74 @@ header .limit-3 {
     border: 1px solid #000;
     background: #1B2836;
 }
-
 .small-box .header {
-    height: 80px;
-    background: red;
+    height: 70px;
 }
 .small-box .profile-info {
     height: 120px;
 }
-
 .small-box .trending-box {
     height: 400px;
+    margin-top: 10px;
+}
+
+/*
+    PROFILE ASSETS
+*/
+.header img {
+    object-fit: cover;
+    width: 100%;
+    border-bottom: 2px solid #5b6b7b;
+}
+.profile-info img{
+    object-fit: cover;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 2px solid #5b6b7b;
+}
+.profile-info {
+    padding: 0 10px;
+    color: white;
+}
+.profile-info p:first-of-type {
+    font-weight: bold;
+}
+.username p {
+    margin: 0 auto;
+    width: 85%;
+    font-size: 20px;
+}
+.username p:last-child {
+    font-size: 12px;
+    line-height: 36px;
+    color: #5b6b7b;
+    font-weight: bold;
+}
+.username div {
+    width: 70%;
+    display: inline-block;
+}
+
+.major {
+    display: table;
+    width: 100%;
+    border-spacing: 5px;
+}
+.minor {
+    display: table-cell;
+}
+.minor p:first-of-type {
+    font-size: 11px;
+    font-weight: 400;
+    color: #6491b9;
+}
+.minor p {
+    margin: 0;
+    font-size:19px;
+    font-weight: 700;
+    color: #f0f8ff;
 }
 
 
@@ -75,7 +132,7 @@ header .limit-3 {
     padding: 10px;
 }
 .new-bark input {
-    width: 80%;
+    width: 97%;
     border: 1px solid #3d3d66;
     color: #fff;
     padding: 8px;
@@ -119,6 +176,7 @@ header .limit-3 {
 
 .bark-user {
     font-weight: bold;
+    color: #f0f8ff;
 }
 .bark-content {
     margin: 15px auto;
