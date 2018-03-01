@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Bitter. Sad!</title>
+        <title>Bitter. We know we had to do it to them.</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <link rel="stylesheet" href="CSS/login.min.css" />
         <link rel="stylesheet" href="CSS/universal.min.css" />
