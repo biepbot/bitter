@@ -68,7 +68,7 @@ public class UserBean implements Serializable
      */
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("{username}/followers/")
+    @Path("{username}/tweets/")
     public List<Bark> getUserBarks(@PathParam("username") String username) {
         User a = null;
         
