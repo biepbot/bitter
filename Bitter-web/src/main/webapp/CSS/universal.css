@@ -85,6 +85,7 @@ header .link {
     box-shadow:inset 0 0 0 0 #fff491;
 }
 
+header .link.active,
 header .link:hover {
     -webkit-box-shadow:inset 0 -4px 0 0 #fff491;
     -moz-box-shadow:inset 0 -4px 0 0 #fff491;
@@ -94,6 +95,14 @@ header .link:hover a {
     color: #fff491;
 }
 
+.right {
+    float: right;
+}
+.right:after {
+  content: "";
+  display: table;
+  clear: both;
+}
 
 /* === hr === */
 .hr:after,

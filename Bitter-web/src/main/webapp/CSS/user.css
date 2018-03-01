@@ -1,0 +1,142 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 01-Mar-2018, 15:52:20
+    Author     : Rowan
+*/
+
+body {
+    background: #141D26;
+    padding-top: 50px;
+}
+
+header {
+    background: #243447;
+    position: fixed;
+    top:0;
+    z-index:100;
+}
+header .limit-3 {
+    border-spacing: 0;
+    max-width: 880px;
+}
+.limit-3 {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    display: table;
+    border-spacing: 10px;
+}
+
+/*
+    USER ASSETS
+*/
+.small-box {
+    width: 300px;
+    display: table-cell;
+    vertical-align: top;
+}
+
+.small-box > div {
+    border: 1px solid #000;
+    background: #1B2836;
+}
+
+.small-box .header {
+    height: 80px;
+    background: red;
+}
+.small-box .profile-info {
+    height: 120px;
+}
+
+.small-box .trending-box {
+    height: 400px;
+}
+
+
+/*
+    TIMELINE ASSETS
+*/
+.long-contents {
+    width: 600px;
+    border: 1px solid #000;
+    margin-top: 10px;
+    background: #1B2836;
+    display: table-cell;
+    vertical-align: top;
+}
+
+.new-bark {
+    background: #2d354a;
+    padding: 10px;
+}
+.new-bark input {
+    width: 80%;
+    border: 1px solid #3d3d66;
+    color: #fff;
+    padding: 8px;
+    outline: 0;
+    background: #141626;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 20px;
+    
+}
+
+
+/*
+    BARK ASSETS
+*/
+.bark {
+    color: #fff;
+    padding: 10px;
+    border-top: 1px solid #000;
+}   
+.bark:hover {
+    background: #19242f;
+}
+
+.bark li {
+    list-style: none;
+}
+.bark ul {
+    display: inline;
+    padding: 0;
+    margin-right: 5px;
+    font-weight: 600;
+}
+
+.bark-user,
+.bark-content,
+.bark-interact {
+    width: 75%;
+    margin: auto;
+}
+
+.bark-user {
+    font-weight: bold;
+}
+.bark-content {
+    margin: 15px auto;
+}
+.bark-interact {
+    color: #5b6b7b;
+}
+
+.bark-image {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 30px;
+    border: 2px solid #5b6b7b;
+}
+.bark-image > img {
+    object-fit: cover;
+    width: 50px;
+    height: 50px;
+}

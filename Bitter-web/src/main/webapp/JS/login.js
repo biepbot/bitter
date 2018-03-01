@@ -19,19 +19,7 @@ function svalidate(e) {
         }
         else {
             // push user to different screen
-            console.log(e);
-            getOATH();
+            window.location = 'home.jsp';
         }
-    });
-}
-
-function getOATH() {
-    call('POST', 'api/sessions/whoami', null, function(e, success) {
-        console.log(e);
-    });
-}
-
-function logout() {
-    call('POST', 'api/sessions/logout', null, function(e, success) {
     });
 }
