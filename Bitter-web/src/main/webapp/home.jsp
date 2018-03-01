@@ -10,6 +10,7 @@
     <head>
         <title>Bitter. We know we had to do it to them.</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="stylesheet" href="CSS/fa/css/font-awesome.min.css" />
         <link rel="stylesheet" href="CSS/universal.min.css" />
         <link rel="stylesheet" href="CSS/user.css" />
         <script src="JS/universal.min.js"></script>
@@ -84,9 +85,9 @@
                     </div>
                     <div class="bark-interact">
                         <li>
-                            <ul>bite</ul>
-                            <ul>bark</ul>
-                            <ul>reply</ul>
+                            <ul><span class="fa fa-bolt"></span>bite</ul>
+                            <ul><span class="fa fa-share-alt"></span>bark</ul>
+                            <ul><span class="fa fa-reply"></span>reply</ul>
                         </li>
                     </div>
                 </div>
@@ -104,9 +105,9 @@
                     </div>
                     <div class="bark-interact">
                         <li>
-                            <ul>bite</ul>
-                            <ul>bark</ul>
-                            <ul>reply</ul>
+                            <ul><span class="fa fa-bolt"></span>bite</ul>
+                            <ul><span class="fa fa-share-alt"></span>bark</ul>
+                            <ul><span class="fa fa-reply"></span>reply</ul>
                         </li>
                     </div>
                 </div>
@@ -122,9 +123,9 @@
                     </div>
                     <div class="bark-interact">
                         <li>
-                            <ul>bite</ul>
-                            <ul>bark</ul>
-                            <ul>reply</ul>
+                            <ul><span class="fa fa-bolt"></span>bite</ul>
+                            <ul><span class="fa fa-share-alt"></span>bark</ul>
+                            <ul><span class="fa fa-reply"></span>reply</ul>
                         </li>
                     </div>
                 </div>
@@ -140,9 +141,9 @@
                     </div>
                     <div class="bark-interact">
                         <li>
-                            <ul>bite</ul>
-                            <ul>bark</ul>
-                            <ul>reply</ul>
+                            <ul class="bitten"><span class="fa fa-bolt"></span>bite</ul>
+                            <ul class="bitten"><span class="fa fa-share-alt"></span>bark</ul>
+                            <ul><span class="fa fa-reply"></span>reply</ul>
                         </li>
                     </div>
                 </div>
@@ -158,9 +159,9 @@
                     </div>
                     <div class="bark-interact">
                         <li>
-                            <ul>bite</ul>
-                            <ul>bark</ul>
-                            <ul>reply</ul>
+                            <ul class="bitten"><span class="fa fa-bolt"></span>bite</ul>
+                            <ul><span class="fa fa-share-alt"></span>bark</ul>
+                            <ul><span class="fa fa-reply"></span>reply</ul>
                         </li>
                     </div>
                 </div>
@@ -176,9 +177,9 @@
                     </div>
                     <div class="bark-interact">
                         <li>
-                            <ul>bite</ul>
-                            <ul>bark</ul>
-                            <ul>reply</ul>
+                            <ul><span class="fa fa-bolt"></span>bite</ul>
+                            <ul><span class="fa fa-share-alt"></span>bark</ul>
+                            <ul><span class="fa fa-reply"></span>reply</ul>
                         </li>
                     </div>
                 </div>
@@ -194,9 +195,9 @@
                     </div>
                     <div class="bark-interact">
                         <li>
-                            <ul>bite</ul>
-                            <ul>bark</ul>
-                            <ul>reply</ul>
+                            <ul class="bitten"><span class="fa fa-bolt"></span>bite</ul>
+                            <ul class="bitten"><span class="fa fa-share-alt"></span>bark</ul>
+                            <ul><span class="fa fa-reply"></span>reply</ul>
                         </li>
                     </div>
                 </div>
@@ -212,9 +213,9 @@
                     </div>
                     <div class="bark-interact">
                         <li>
-                            <ul>bite</ul>
-                            <ul>bark</ul>
-                            <ul>reply</ul>
+                            <ul class="bitten"><span class="fa fa-bolt"></span>bite</ul>
+                            <ul class="bitten"><span class="fa fa-share-alt"></span>bark</ul>
+                            <ul><span class="fa fa-reply"></span>reply</ul>
                         </li>
                     </div>
                 </div>
@@ -230,9 +231,9 @@
                     </div>
                     <div class="bark-interact">
                         <li>
-                            <ul>bite</ul>
-                            <ul>bark</ul>
-                            <ul>reply</ul>
+                            <ul><span class="fa fa-bolt"></span>bite</ul>
+                            <ul><span class="fa fa-share-alt"></span>bark</ul>
+                            <ul><span class="fa fa-reply"></span>reply</ul>
                         </li>
                     </div>
                 </div>
@@ -248,9 +249,9 @@
                     </div>
                     <div class="bark-interact">
                         <li>
-                            <ul>bite</ul>
-                            <ul>bark</ul>
-                            <ul>reply</ul>
+                            <ul><span class="fa fa-bolt"></span>bite</ul>
+                            <ul><span class="fa fa-share-alt"></span>bark</ul>
+                            <ul><span class="fa fa-reply"></span>reply</ul>
                         </li>
                     </div>
                 </div>
