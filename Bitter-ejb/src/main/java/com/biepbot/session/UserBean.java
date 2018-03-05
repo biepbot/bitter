@@ -7,12 +7,11 @@ package com.biepbot.session;
 
 import com.biepbot.base.Bark;
 import com.biepbot.base.User;
+import com.biepbot.rest.PersistentUnit;
 import java.io.Serializable;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,11 +25,8 @@ import javax.ws.rs.core.MediaType;
 @Stateless
 @Named
 @Path("/username")
-public class UserBean implements Serializable 
-{
-    @PersistenceContext
-    private EntityManager em;
-    
+public class UserBean extends PersistentUnit implements Serializable 
+{    
     /**
      *
      * @param username
@@ -40,7 +36,7 @@ public class UserBean implements Serializable
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("{username}/")
     public User getUser(@PathParam("username") String username) {
-        return new User("test");
+        return em.find(User.class, username);
     }
     
     /**
@@ -52,9 +48,7 @@ public class UserBean implements Serializable
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("{username}/followers/")
     public List<User> getUserFollowers(@PathParam("username") String username) {
-        User a = null;
-        
-        return a.getFollowers();
+        return getUser(username).getFollowers();
     }
     
     /**
@@ -64,11 +58,9 @@ public class UserBean implements Serializable
      */
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("{username}/tweets/")
+    @Path("{username}/barks/")
     public List<Bark> getUserBarks(@PathParam("username") String username) {
-        User a = null;
-        
-        return a.getBarks();
+        return getUser(username).getBarks();
     }
     
     /**
@@ -80,8 +72,6 @@ public class UserBean implements Serializable
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("{username}/following/")
     public List<User> getUserFollowing(@PathParam("username") String username) {
-        User a = null;
-        
-        return a.getFollowing();
+        return getUser(username).getFollowing();
     }
 }

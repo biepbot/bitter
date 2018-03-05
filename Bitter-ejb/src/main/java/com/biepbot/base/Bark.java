@@ -6,10 +6,12 @@
 package com.biepbot.base;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -37,6 +39,19 @@ public class Bark implements Serializable
      */
     @ManyToOne
     private User poster;
+    
+    /**
+     * The people who liked this 'tweet'
+     */
+    @ManyToMany
+    private List<User> likes;
+    
+    
+    /**
+     * The person who 'retweeted' this 'tweet'
+     */
+    @ManyToMany
+    private List<User> barks;
     
     public Bark()
     {
