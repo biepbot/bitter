@@ -18,7 +18,7 @@ import javax.persistence.PersistenceContext;
 @Singleton
 public class DB
 {
-    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("bitter");
+    private EntityManagerFactory emf;
     
     @PersistenceContext
     private EntityManager em;
@@ -27,6 +27,7 @@ public class DB
     {
         if (em == null) 
         {
+            emf = Persistence.createEntityManagerFactory("bitter");
             em = emf.createEntityManager();
         }
     }

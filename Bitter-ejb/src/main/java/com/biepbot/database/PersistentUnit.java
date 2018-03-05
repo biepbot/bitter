@@ -5,11 +5,9 @@
  */
 package com.biepbot.database;
 
-import com.biepbot.database.DB;
 import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,7 +19,6 @@ import javax.persistence.criteria.Root;
  */
 public class PersistentUnit
 {
-    @PersistenceContext
     protected EntityManager em;
     
     @EJB
@@ -31,8 +28,8 @@ public class PersistentUnit
     {
         if (db == null) {
             db = new DB();
-            em = db.getEntityManager();
         }
+        em = db.getEntityManager();
     }
     
     /**

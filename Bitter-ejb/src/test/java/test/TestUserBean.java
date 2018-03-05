@@ -5,7 +5,6 @@
  */
 package test;
 
-import com.biepbot.database.EntityHolder;
 import com.biepbot.base.Role;
 import com.biepbot.base.User;
 import com.biepbot.session.UserBean;
@@ -13,12 +12,13 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import test.base.TestEntityHolder;
 
 /**
  *
  * @author Rowan
  */
-public class TestUserBean extends EntityHolder
+public class TestUserBean extends TestEntityHolder
 {
     private final UserBean bean;
     User a;

@@ -14,6 +14,57 @@
 
     <name>Bitter-ejb</name>
 
+    <profiles>
+        <!-- for testing -->
+        <profile>
+           <build>
+             <resources>
+                <resource>
+                  <directory>src/main/resources</directory>
+                  <filtering>true</filtering>
+                </resource>                        
+             </resources>
+           </build>
+            <id>test</id>
+            <properties>
+                <!-- change the TT name to RESOURCE_LOCAL -->
+                <JDBC_TYPE>RESOURCE_LOCAL</JDBC_TYPE>
+                <JDBC_DRIVER>com.mysql.jdbc.Driver</JDBC_DRIVER>
+                <JDBC_URL>jdbc:mysql://localhost:3306/bitter</JDBC_URL>
+                <JDBC_USER>root</JDBC_USER>
+                <JDBC_PASSWORD>password</JDBC_PASSWORD>
+                <JDBC_DATASOURCE></JDBC_DATASOURCE>
+                <a>empty</a>
+            </properties>
+        </profile>
+        
+        <!-- for release -->
+        <profile>
+            <build>
+             <resources>
+                <resource>
+                  <directory>src/main/resources</directory>
+                  <filtering>true</filtering>
+                </resource>
+             </resources>
+            </build>
+            <id>release</id>
+            <properties>
+                <!-- change the TT name to JTA -->
+                <JDBC_TYPE>JTA</JDBC_TYPE>
+                <JDBC_DRIVER>org.apache.derby.jdbc.ClientDriver</JDBC_DRIVER>
+                <JDBC_URL>jdbc:derby://localhost:1527/DERBY_bitter</JDBC_URL>
+                <JDBC_USER></JDBC_USER>
+                <JDBC_PASSWORD></JDBC_PASSWORD>
+                <JDBC_DATASOURCE>jdbc/__DERBY_bitter</JDBC_DATASOURCE>
+                <a>jta-data-source</a>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,16 +72,22 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.5.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
+            <version>2.5.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>8.0</version>
             <type>jar</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sun.mail</groupId>
-                    <artifactId>javax.mail</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         
         <dependency>
