@@ -5,10 +5,12 @@
  */
 package test;
 
+import com.biepbot.base.Role;
 import com.biepbot.base.User;
 import com.biepbot.session.UserBean;
-import javax.transaction.Transactional;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -18,36 +20,67 @@ import org.junit.Test;
 public class TestUserBean extends EntityTester
 {
     private final UserBean bean;
+    User a;
+    String tu = "testuser";
     
     public TestUserBean()
     {
-        this.bean = new UserBean();
+        this.bean = new UserBean();        
+        if ((a=bean.getUser(tu)) != null) {
+            delete(a);
+        }
+        a = new User(tu);
+        changes++;
+    }
+    
+    @Before
+    public void setupUser() {
+        save(a);
+    }
+    
+    @After
+    public void tearDownUser() {
+        delete(a);
+    }
+    
+    // basic user testing
+    @Test
+    public void checkDatabaseUser() 
+    {        
+        User b = bean.getUser(tu);   
+        Assert.assertNotNull(b);                            // Should exist
+        Assert.assertEquals(a, b);                          // Should be the same user
     }
     
     @Test
-    @Transactional
-    public void GetUserTest() 
+    public void checkDefaultPrivilege() 
     {
-        User a = new User("testuser");   
-        persist(a);
+        User b = bean.getUser(tu);   
+        Assert.assertNotNull(b);                            // Should exist
+        Assert.assertEquals(b.getPrivilege(), Role.user);   // Should be default
+    }
+    
+    @Test
+    public void checkNoUser() 
+    {
+        Assert.assertNull(bean.getUser("nouser"));
+    }
+    
+    @Test
+    public void checkUnsupportedUser() 
+    {
+        Assert.assertNull(bean.getUser("#*"));
+    }
+    
+    // barking
+    @Test
+    public void checkValidTweet() 
+    {        
+        boolean res = a.Bark("hello world!");
+        update(a);
+        User b = bean.getUser(tu);
+        Assert.assertTrue(res);                             // Not too long
+        Assert.assertFalse(b.getBarks().isEmpty());         // Posted
         
-        User b = bean.getUser("testuser");   
-        Assert.assertNotNull(b);
-        Assert.assertTrue((a.getName() == null ? b.getName() == null : a.getName().equals(b.getName())));
-        rollback();
-    }
-    
-    @Test
-    public void GetFakeUserTest() 
-    {
-        User a = bean.getUser("nouser");
-        Assert.assertNull(a);
-    }
-    
-    @Test
-    public void GetUnsupportedUserTest() 
-    {
-        User a = bean.getUser("#*");
-        Assert.assertNull(a);
     }
 }

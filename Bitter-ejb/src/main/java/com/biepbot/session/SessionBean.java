@@ -57,7 +57,6 @@ public class SessionBean implements Serializable
         OATH = null;
     }
     
-    
     /**
      *
      * @return logs a user in and returns a OATH code

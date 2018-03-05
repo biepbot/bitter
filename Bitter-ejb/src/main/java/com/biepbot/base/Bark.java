@@ -6,32 +6,28 @@
 package com.biepbot.base;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.Table;
 
 /**
  *
  * @author Rowan
  */
 @Entity
+@Table
 public class Bark implements Serializable
 {
-
-    /**
-     * the content of the 'tweet'
-     */
-    @XmlTransient
-    private String content;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @XmlTransient
     private Long id;
 
     /**
@@ -41,17 +37,16 @@ public class Bark implements Serializable
     private User poster;
     
     /**
-     * The people who liked this 'tweet'
+     * the content of the 'tweet'
      */
-    @ManyToMany
-    private List<User> likes;
+    @Column(length = 280)
+    private String content;
     
+    @ManyToMany(mappedBy = "rebarks")
+    private List<User> rebarkers;
     
-    /**
-     * The person who 'retweeted' this 'tweet'
-     */
-    @ManyToMany
-    private List<User> barks;
+    @ManyToMany(mappedBy = "likes")
+    private List<User> likers;
     
     public Bark()
     {
@@ -61,6 +56,8 @@ public class Bark implements Serializable
     {
         this.poster = poster;
         this.content = content;
+        rebarkers = new ArrayList<>();
+        likers = new ArrayList<>();
     }
 
     public String getContent()
@@ -76,5 +73,20 @@ public class Bark implements Serializable
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public User getPoster()
+    {
+        return poster;
+    }
+    
+    public void like(User liked) 
+    {
+        likers.add(liked);
+    }
+    
+    public void rebark(User rebarked) 
+    {
+        rebarkers.add(rebarked);
     }
 }

@@ -35,4 +35,12 @@ public class DB
     {
         return em;
     }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+        if (em.isOpen())
+            em.close();
+        super.finalize();
+    }
 }

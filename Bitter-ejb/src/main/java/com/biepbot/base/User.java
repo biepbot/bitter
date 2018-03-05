@@ -8,43 +8,83 @@ package com.biepbot.base;
 import com.biepbot.barking.Validator;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
+import javax.ejb.EJB;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
  * @author Rowan
  */
-@Entity(name="Account")
+@Entity
+@Table(name="Account")
 public class User implements Serializable
 {
+    @EJB
+    @Transient
     Validator val;
     
     @Id 
-    @XmlTransient
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
+    @Column(nullable = false, unique = true, length = 50)
     private String name;
-    @XmlTransient
-    private String avatar;
     
-    @XmlTransient
-    @ManyToMany(mappedBy = "likes")
-    private List<Bark> barks;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Bark> barks;           // tweets
     
-    @OneToMany
-    @XmlTransient
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "like_user",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "like_id")
+    )
+    private List<Bark> likes;           // likes
+    
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "rebark_user",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "rebark_id")
+    )
+    private List<Bark> rebarks;           // retweets
+    
+    @ManyToMany(mappedBy = "followers", cascade = CascadeType.ALL)
+    @JoinTable(name = "follow_user",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "follow_id")
+    )
     private List<User> following;
     
-    @OneToMany
-    @XmlTransient
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "follower_user",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
     private List<User> followers;
     
-    @OneToMany
-    @XmlTransient
+    @OneToMany(cascade = CascadeType.ALL)
     private List<User> blockedUsers;
-
+    
+    @Column(nullable = false)
+    private Role privilege = Role.user;
+    
+    private String bio;
+    
+    private String location;
+    
+    private String color;
+    
     public User()
     {
     }
@@ -73,18 +113,17 @@ public class User implements Serializable
     }
     
     /**
-     * Updates the database
-     */
-    public void revalidateUser() {
-        // todo ?
-    }
-    
-    /**
      * Post a tweet, if valid
-     * @param bark
+     * @param content
      * @return 
      */
-    public boolean Bark(Bark bark) {
+    public boolean Bark(String content) {
+        Bark bark = new Bark(this, content);
+        
+        if (val == null) {
+            val = new Validator();
+        }
+        
         if (val.IsBarkProper(bark)) {
             barks.add(bark);
             return true;
@@ -100,11 +139,6 @@ public class User implements Serializable
     public void setName(String name)
     {
         this.name = name;
-    }
-
-    public String getAvatar()
-    {
-        return avatar;
     }
 
     public List<Bark> getBarks()
@@ -126,5 +160,91 @@ public class User implements Serializable
     {
         return blockedUsers;
     }    
+
+    public List<Bark> getLikes()
+    {
+        return likes;
+    }
+
+    public String getBio()
+    {
+        return bio;
+    }
+
+    public void setBio(String bio)
+    {
+        this.bio = bio;
+    }
+
+    public String getLocation()
+    {
+        return location;
+    }
+
+    public void setLocation(String location)
+    {
+        this.location = location;
+    }    
+
+    public Role getPrivilege()
+    {
+        return privilege;
+    }
+
+    public void setPrivilege(Role privilege)
+    {
+        this.privilege = privilege;
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public String getColor()
+    {
+        return color;
+    }
+
+    public void setColor(String color)
+    {
+        this.color = color;
+    }
+
+    public List<Bark> getRebarks()
+    {
+        return rebarks;
+    }
     
+    @Override
+    public int hashCode()
+    {
+        int hash = 5;
+        hash = 29 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final User other = (User) obj;
+        return Objects.equals(this.name, other.name);
+    }    
 }
