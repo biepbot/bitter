@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.inject.Named;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -77,10 +78,10 @@ public class UserBean extends PersistentUnit implements Serializable
      * @param file the form file to update with
      * @return whether the image could be updated or not
      */
-    @GET
+    @POST
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/{username}/avatar/upload")
-    public int getUserLikes(@PathParam("username") String username, @FormParam("avatar") File file) {
+    public int updateAvatar(@PathParam("username") String username, @FormParam("avatar") File file) {
         // TODO
         // verify user
         // check if image
