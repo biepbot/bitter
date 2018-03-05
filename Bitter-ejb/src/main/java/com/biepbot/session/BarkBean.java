@@ -6,7 +6,7 @@
 package com.biepbot.session;
 
 import com.biepbot.base.Bark;
-import com.biepbot.rest.PersistentUnit;
+import com.biepbot.database.PersistentUnit;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;

@@ -7,7 +7,7 @@ package com.biepbot.session;
 
 import com.biepbot.base.Bark;
 import com.biepbot.base.User;
-import com.biepbot.rest.PersistentUnit;
+import com.biepbot.database.PersistentUnit;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;

@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.biepbot.database;
 
-import com.biepbot.rest.DB;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -13,14 +12,14 @@ import javax.persistence.EntityManager;
  *
  * @author Rowan
  */
-public class EntityTester
+public class EntityHolder
 {
     protected DB db;
     protected EntityManager em;
     
     protected int changes = 0;
 
-    public EntityTester()
+    public EntityHolder()
     {
         db = new DB();
         em = db.getEntityManager();
