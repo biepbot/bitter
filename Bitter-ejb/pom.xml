@@ -30,7 +30,7 @@
                 <!-- change the TT name to RESOURCE_LOCAL -->
                 <JDBC_TYPE>RESOURCE_LOCAL</JDBC_TYPE>
                 <JDBC_DRIVER>com.mysql.jdbc.Driver</JDBC_DRIVER>
-                <JDBC_URL></JDBC_URL>
+                <JDBC_URL>jdbc:mysql://localhost:3306/bitter</JDBC_URL>
                 <JDBC_USER>root</JDBC_USER>
                 <JDBC_PASSWORD></JDBC_PASSWORD>
                 <JDBC_DATASOURCE></JDBC_DATASOURCE>
