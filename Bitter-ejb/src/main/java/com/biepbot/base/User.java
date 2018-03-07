@@ -7,6 +7,7 @@ package com.biepbot.base;
 
 import com.biepbot.barking.Validator;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.ejb.EJB;
@@ -43,38 +44,38 @@ public class User implements Serializable
     private String name;
     
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Bark> barks;           // tweets
+    private List<Bark> barks = new ArrayList<>();           // tweets
     
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "like_user",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "like_id")
     )
-    private List<Bark> likes;           // likes
+    private List<Bark> likes = new ArrayList<>();           // likes
     
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "rebark_user",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "rebark_id")
     )
-    private List<Bark> rebarks;           // retweets
+    private List<Bark> rebarks = new ArrayList<>();           // retweets
     
     @ManyToMany(mappedBy = "followers", cascade = CascadeType.ALL)
     @JoinTable(name = "follow_user",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "follow_id")
     )
-    private List<User> following;
+    private List<User> following = new ArrayList<>();
     
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "follower_user",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
-    private List<User> followers;
+    private List<User> followers = new ArrayList<>();
     
     @OneToMany(cascade = CascadeType.ALL)
-    private List<User> blockedUsers;
+    private List<User> blockedUsers = new ArrayList<>();
     
     @Column(nullable = false)
     private Role privilege = Role.user;

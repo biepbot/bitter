@@ -6,6 +6,7 @@
 package com.biepbot.database;
 
 import java.util.List;
+import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 
 /**
@@ -14,6 +15,7 @@ import javax.persistence.EntityManager;
  */
 public class EntityHolder
 {
+    @EJB
     protected DB db;
     protected EntityManager em;
     

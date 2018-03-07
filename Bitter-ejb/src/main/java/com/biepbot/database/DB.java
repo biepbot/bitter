@@ -5,10 +5,9 @@
  */
 package com.biepbot.database;
 
+import com.biepbot.database.mocking.LocalEntityManager;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 
 /**
@@ -18,17 +17,14 @@ import javax.persistence.PersistenceContext;
 @Singleton
 public class DB
 {
-    private EntityManagerFactory emf;
-    
-    @PersistenceContext
+    @PersistenceContext(name = "bitter")
     private EntityManager em;
 
     public DB()
     {
         if (em == null) 
         {
-            emf = Persistence.createEntityManagerFactory("bitter");
-            em = emf.createEntityManager();
+            em = new LocalEntityManager();
         }
     }
     

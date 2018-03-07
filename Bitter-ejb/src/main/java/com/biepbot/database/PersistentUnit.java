@@ -5,6 +5,8 @@
  */
 package com.biepbot.database;
 
+import com.biepbot.database.mocking.LocalEntityManager;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -41,16 +43,23 @@ public class PersistentUnit
      */
     public Object getObjectFromQuery(Class c, String f, Object where)
     {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<Object> criteria = builder.createQuery(c);
-        Root<Object> from = criteria.from(c);
-        criteria.select(from);
-        criteria.where(builder.equal(from.get(f), where));
-        TypedQuery<Object> typed = em.createQuery(criteria);
-        try {
-            return typed.getSingleResult();
-        } catch (final NoResultException nre) {
-            return null;
+        LocalEntityManager lem = (LocalEntityManager)em;
+        if (lem != null)
+        {
+            List<Object> objs = lem.get(c, f, where);
+            return objs.isEmpty() ? null : objs.get(0);
+        } else {        
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            CriteriaQuery<Object> criteria = builder.createQuery(c);
+            Root<Object> from = criteria.from(c);
+            criteria.select(from);
+            criteria.where(builder.equal(from.get(f), where));
+            TypedQuery<Object> typed = em.createQuery(criteria);
+            try {
+                return typed.getSingleResult();
+            } catch (final NoResultException nre) {
+                return null;
+            }
         }
     }
 }
