@@ -15,6 +15,29 @@
     <name>Bitter-ejb</name>
 
     <profiles>
+        <!-- for jenkins testing -->
+        <profile>
+           <build>
+             <resources>
+                <resource>
+                  <directory>src/main/resources</directory>
+                  <filtering>true</filtering>
+                </resource>                        
+             </resources>
+           </build>
+            <id>jenkins_test</id>
+            <properties>
+                <!-- change the TT name to RESOURCE_LOCAL -->
+                <JDBC_TYPE>RESOURCE_LOCAL</JDBC_TYPE>
+                <JDBC_DRIVER>com.mysql.jdbc.Driver</JDBC_DRIVER>
+                <JDBC_URL></JDBC_URL>
+                <JDBC_USER>root</JDBC_USER>
+                <JDBC_PASSWORD></JDBC_PASSWORD>
+                <JDBC_DATASOURCE></JDBC_DATASOURCE>
+                <a>empty</a>
+            </properties>
+        </profile>
+        
         <!-- for testing -->
         <profile>
            <build>
