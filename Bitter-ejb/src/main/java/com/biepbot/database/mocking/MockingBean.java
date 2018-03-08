@@ -39,11 +39,17 @@ public class MockingBean
         
         // create users
         User goo = new User("GoodUser5");
+        db.save(goo);
         User aba = new User("ABadMeme");
+        db.save(aba);
         User kez = new User("Kezter");
+        db.save(kez);
         User sad = new User("SadTeen99");
+        db.save(sad);
         User don = new User("DonaldBump");
+        db.save(don);
         User mem = new User("MemeMester");
+        db.save(mem);
         
         // attach tweets to users
         don.bark("Something. Sad!");
@@ -68,7 +74,7 @@ public class MockingBean
         Bark emoji = sad.getBarks().get(0);
         emoji.like(bie);
         
-        Bark cold = goo.getBarks().get(0);
+        Bark cold = goo.getBarks().get(1);
         cold.like(bie);
         cold.rebark(bie);
         
