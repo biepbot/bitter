@@ -40,6 +40,8 @@ data.barktemplate =
        + '        </div>';
 
 function loadUser() {
+    var tries = 0;
+    
     call('GET', 'api/users/' + data.user.name, null, function (e, success) {
         if (success) {
             e = JSON.parse(e);
@@ -67,13 +69,19 @@ function loadUser() {
             $('avatar').src = avatar;
             
         } else {
-            console.log(e);
+            tries++;
+            if (tries < 5) {
+                loadUser();
+            } else {
+                console.log(e);
+            }
         }
     });
 }
 
 // Loads in the Timeline
 function loadTimeline() {
+    var tries = 0;
     call('GET', 'api/users/' + data.user.name + '/timeline', null, function (e, success) {
         if (success) {
             e = JSON.parse(e);
@@ -94,7 +102,12 @@ function loadTimeline() {
             }
             
         } else {
-            console.log(e);
+            tries++;
+            if (tries < 5) {
+                loadTimeline();
+            } else {
+                console.log(e);
+            }
         }
     });
 }
