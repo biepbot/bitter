@@ -23,6 +23,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -34,7 +35,7 @@ public class User implements Serializable
 {
     @EJB
     @Transient
-    Validator val;
+    private Validator val;
     
     @Id 
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,58 +44,84 @@ public class User implements Serializable
     @Column(nullable = false, unique = true, length = 50)
     private String name;
     
+    /**
+     * Tweets of a user
+     */
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Bark> barks = new ArrayList<>();           // tweets
+    private List<Bark> barks;           
     
+    /**
+     * Likes of a user
+     */
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "like_user",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "like_id")
     )
+    private List<Bark> likes;           
     
-    private List<Bark> likes = new ArrayList<>();           // likes
-    
+    /**
+     * Retweets of a user
+     */
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "rebark_user",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "rebark_id")
     )
-    private List<Bark> rebarks = new ArrayList<>();           // retweets
+    private List<Bark> rebarks;           
     
+    /**
+     * The user's following
+     */
     @ManyToMany(mappedBy = "followers", cascade = CascadeType.ALL)
     @JoinTable(name = "follow_user",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "follow_id")
     )
-    private List<User> following = new ArrayList<>();
+    private List<User> following;
     
+    /**
+     * The user's followers
+     */
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "follower_user",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
-    private List<User> followers = new ArrayList<>();
+    private List<User> followers;
     
+    /**
+     * The user's blocked users
+     */
     @OneToMany(cascade = CascadeType.ALL)
-    private List<User> blockedUsers = new ArrayList<>();
+    private List<User> blockedUsers;
     
     @Column(nullable = false)
     private Role privilege = Role.user;
    
-    private String bio = "";
+    private String bio;
     
-    private String location = "";
+    private String location;
     
-    private String color = "";
+    private String color;
     
-    private String email = "";
+    private String email;
     
-    public User()
-    {
-    }
+    /**
+    * Default constructor for reflection libraries only
+    * Don't use this to create new objects!
+    */
+    @Deprecated
+    public User() { }
 
     public User(String name)
     {
+        this.barks = new ArrayList<>();
+        this.blockedUsers = new ArrayList<>();
+        this.followers = new ArrayList<>();
+        this.following = new ArrayList<>();
+        this.rebarks = new ArrayList<>();
+        this.likes = new ArrayList<>();
         this.name = name;
     }
     
@@ -158,26 +185,31 @@ public class User implements Serializable
         this.name = name;
     }
 
+    @XmlTransient
     public List<Bark> getBarks()
     {
         return barks;
     }
 
+    @XmlTransient
     public List<User> getFollowing()
     {
         return following;
     }
 
+    @XmlTransient
     public List<User> getFollowers()
     {
         return followers;
     }
 
+    @XmlTransient
     public List<User> getBlockedUsers()
     {
         return blockedUsers;
     }    
 
+    @XmlTransient
     public List<Bark> getLikes()
     {
         return likes;
@@ -203,6 +235,7 @@ public class User implements Serializable
         this.location = location;
     }    
 
+    @XmlTransient
     public Role getPrivilege()
     {
         return privilege;
@@ -233,6 +266,7 @@ public class User implements Serializable
         this.color = color;
     }
 
+    @XmlTransient
     public List<Bark> getRebarks()
     {
         return rebarks;

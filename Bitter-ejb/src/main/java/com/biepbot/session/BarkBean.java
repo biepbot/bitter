@@ -6,6 +6,7 @@
 package com.biepbot.session;
 
 import com.biepbot.base.Bark;
+import com.biepbot.base.User;
 import com.biepbot.database.PersistentUnit;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,17 +43,17 @@ import javax.ws.rs.core.UriInfo;
 public class BarkBean
 {
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss", Locale.ENGLISH);
-    
+
     @EJB
     private PersistentUnit pu;
-    
+
     public static BarkBean getTestBarkBean()
     {
         BarkBean b = new BarkBean();
         b.loadPersistanceUnit();
         return b;
     }
-    
+
     public void loadPersistanceUnit()
     {
         if (pu == null)
@@ -60,10 +61,10 @@ public class BarkBean
             pu = new PersistentUnit(true);
         }
     }
-    
+
     /**
-     * Searches through barks of last week and displays the X major ones
-     * Does not show barks without likes or rebarks
+     * Searches through barks of last week and displays the X major ones Does
+     * not show barks without likes or rebarks
      *
      * @param amount
      * @return relevant 'tweets'
@@ -77,11 +78,12 @@ public class BarkBean
     public List<Bark> getTrending(@PathParam("amount") String amount)
     {
         int amnt = 5;
-        if (amount.matches("-?\\d+(\\.\\d+)?")) {
+        if (amount.matches("-?\\d+(\\.\\d+)?"))
+        {
             amnt = Integer.parseInt(amount);
-            
+
         }
-        
+
         Calendar days = new GregorianCalendar();
         days.add(Calendar.DAY_OF_MONTH, -5);
 
@@ -93,9 +95,95 @@ public class BarkBean
         params.put("limit", String.valueOf(amnt));
         return getSearchResult(params);
     }
+
     /**
-     * Searches through barks of last week and displays the X major ones
-     * Does not show barks without likes or rebarks
+     *
+     * @param barkID
+     * @return who liked this bark
+     */
+    @GET
+    @Produces(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    @Path("/{bark}/likes")
+    public List<User> getLikes(@PathParam("bark") String barkID)
+    {
+        Bark b = getBark(barkID);
+        if (b != null)
+        {
+            return b.getLikers();
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     *
+     * @param barkID
+     * @return who rebarked this bark
+     */
+    @GET
+    @Produces(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    @Path("/{bark}/rebarks")
+    public List<User> getRebarks(@PathParam("bark") String barkID)
+    {
+        Bark b = getBark(barkID);
+        if (b != null)
+        {
+            return b.getRebarkers();
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     *
+     * @param barkID
+     * @return the replies to this bark
+     */
+    @GET
+    @Produces(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    @Path("/{bark}/replies")
+    public List<Bark> getReplies(@PathParam("bark") String barkID)
+    {
+        Bark b = getBark(barkID);
+        if (b != null)
+        {
+            return b.getReplies();
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     *
+     * @param barkID
+     * @return details about this bark
+     */
+    @GET
+    @Produces(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    @Path("/{bark}")
+    public Bark getBark(@PathParam("bark") String barkID)
+    {
+
+        if (barkID.matches("-?\\d+(\\.\\d+)?"))
+        {
+            int id = Integer.parseInt(barkID);
+            return pu.getObjectFromQuery(Bark.class, "id", id);
+        }
+        return null;
+    }
+
+    /**
+     * Searches through barks of last week and displays the X major ones Does
+     * not show barks without likes or rebarks
      *
      * @return relevant 'tweets'
      */
@@ -127,7 +215,7 @@ public class BarkBean
         // returns a Map<String, LinkedList<String>>
         MultivaluedMap<String, String> parameters = ui.getQueryParameters();
         Map<String, String> params = new HashMap<>();
-        
+
         // Turn into usable Map<String, String>
         Set<String> keys = parameters.keySet();
         for (String key : keys)
@@ -137,20 +225,16 @@ public class BarkBean
             {
                 params.put(key, value);
             }
-        }        
-        
+        }
+
         return getSearchResult(params);
     }
 
     /**
-     * Searches through barks to match the queries ACCEPTED: 
-     * 1. any field 
-     * 2. before - date 
-     * 3. after - date 
-     * 4. orderBy - "rebarks", "likes", "value" 
-     * 5. contains - string 6. limit - amount
-     * 6. min_rebarks - minimum
-     * 7. min_likes - minimum likes
+     * Searches through barks to match the queries ACCEPTED: 1. any field 2.
+     * before - date 3. after - date 4. orderBy - "rebarks", "likes", "value" 5.
+     * contains - string 6. limit - amount 6. min_rebarks - minimum 7. min_likes
+     * - minimum likes
      *
      * @param parameters
      * @return
@@ -174,10 +258,13 @@ public class BarkBean
                 case "min_rebarks":
                     break;
                 case "limit":
-                    if (value.matches("-?\\d+(\\.\\d+)?")) {
+                    if (value.matches("-?\\d+(\\.\\d+)?"))
+                    {
                         limit = Integer.parseInt(value);
                         if (limit == 0)
+                        {
                             return new ArrayList<>();
+                        }
                     }
                     break;
                 default:
@@ -189,11 +276,11 @@ public class BarkBean
         // todo: migrate to seperate functions to remove database load
         // Get all the barks
         List<Bark> ret = pu.<Bark>getObjectsFromQuery(Bark.class, par);
-        
+
         // Barks to remove from list later
         Set<Bark> rem = new HashSet<>();
         String order = "";
-        
+
         for (Map.Entry<String, String> object : parameters.entrySet())
         {
             String key = object.getKey();
@@ -202,86 +289,94 @@ public class BarkBean
             switch (key)
             {
                 case "before":
-                    try {
+                    try
+                    {
                         // parse value to calendar
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(sdf.parse(value));
 
                         // for loop, remove anything before calender now
-                        for (Bark b : ret) 
+                        for (Bark b : ret)
                         {
                             if (b.getPosttime().before(cal))
                             {
                                 rem.add(b);
                             }
                         }
-                    } 
-                    catch (Exception e) 
-                    {} // not interested in errors
+                    }
+                    catch (Exception e)
+                    {
+                    } // not interested in errors
                     break;
                 case "after":
-                    try {
+                    try
+                    {
                         // parse value to calendar
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(sdf.parse(value));
 
                         // for loop, remove anything after calender now
-                        for (Bark b : ret) 
+                        for (Bark b : ret)
                         {
                             if (b.getPosttime().after(cal))
                             {
                                 rem.add(b);
                             }
                         }
-                    } 
-                    catch (Exception e) 
-                    {} // not interested in errors
+                    }
+                    catch (Exception e)
+                    {
+                    } // not interested in errors
                     break;
                 case "orderBy":
                     order = value;
                     break;
                 case "contains":
                     // check if contains
-                    for (Bark b : ret) 
+                    for (Bark b : ret)
                     {
                         if (!b.getContent().contains(value))
                         {
-                             rem.add(b);
+                            rem.add(b);
                         }
                     }
                     break;
                 case "min_likes":
                     // check if enough likes
-                    if (value.matches("-?\\d+(\\.\\d+)?")) {
+                    if (value.matches("-?\\d+(\\.\\d+)?"))
+                    {
                         int amnt = Integer.parseInt(value);
-                        for (Bark b : ret) 
+                        for (Bark b : ret)
                         {
                             if (b.getLikers().size() < amnt)
                             {
-                                 rem.add(b);
+                                rem.add(b);
                             }
                         }
                     }
                     break;
                 case "min_rebarks":
                     // check if enough rebarks
-                    if (value.matches("-?\\d+(\\.\\d+)?")) {
+                    if (value.matches("-?\\d+(\\.\\d+)?"))
+                    {
                         int amnt = Integer.parseInt(value);
-                        for (Bark b : ret) 
+                        for (Bark b : ret)
                         {
                             if (b.getRebarkers().size() < amnt)
                             {
-                                 rem.add(b);
+                                rem.add(b);
                             }
                         }
                     }
                     break;
             }
         }
-        
+
         // remove all removed
         if (rem.size() > 0)
+        {
             ret.removeAll(rem);
+        }
 
         if (!"".equals(order))
         {
@@ -327,7 +422,9 @@ public class BarkBean
         }
 
         if (limit - 1 < ret.size() && ret.size() != 1)
-             ret = ret.subList(0, limit);
+        {
+            ret = ret.subList(0, limit);
+        }
         return ret;
     }
 }

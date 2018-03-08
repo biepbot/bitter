@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -56,9 +57,14 @@ public class Bark implements Serializable, Comparable<Bark>
     @OneToMany(mappedBy = "repliedTo")
     private List<Bark> replies;
     
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Calendar posttime;
     
+    /**
+    * Default constructor for reflection libraries only
+    * Don't use this to create new objects!
+    */
+    @Deprecated
     public Bark()
     {
     }
@@ -112,11 +118,13 @@ public class Bark implements Serializable, Comparable<Bark>
         replies.add(b);
     }
 
+    @XmlTransient
     public List<User> getRebarkers()
     {
         return rebarkers;
     }
 
+    @XmlTransient
     public List<User> getLikers()
     {
         return likers;
@@ -137,6 +145,7 @@ public class Bark implements Serializable, Comparable<Bark>
         this.repliedTo = repliedTo;
     }
 
+    @XmlTransient
     public List<Bark> getReplies()
     {
         return replies;
