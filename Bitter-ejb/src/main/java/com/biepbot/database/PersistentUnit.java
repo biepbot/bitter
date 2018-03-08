@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.ejb.Stateful;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -22,6 +23,7 @@ import javax.persistence.criteria.Root;
  *
  * @author Rowan
  */
+@Stateful
 public class PersistentUnit
 {
     @EJB
@@ -105,9 +107,9 @@ public class PersistentUnit
      */
     public <T> List<T> getObjectsFromQuery(Class c, Map<String, Object> where)
     {
-        LocalEntityManager lem = (LocalEntityManager) db.getEntityManager();
-        if (lem != null)
+        if (db.getEntityManager() instanceof LocalEntityManager)
         {
+            LocalEntityManager lem = (LocalEntityManager) db.getEntityManager();
             return lem.<T>get(c, where);
         }
         else
