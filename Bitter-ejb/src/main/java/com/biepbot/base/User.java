@@ -23,6 +23,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -106,6 +107,8 @@ public class User implements Serializable
     private String color;
     
     private String email;
+    
+    private String avatar;
     
     /**
     * Default constructor for reflection libraries only
@@ -215,6 +218,16 @@ public class User implements Serializable
         return likes;
     }
 
+    public String getAvatar()
+    {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar)
+    {
+        this.avatar = avatar;
+    }
+
     public String getBio()
     {
         return bio;
@@ -234,6 +247,24 @@ public class User implements Serializable
     {
         this.location = location;
     }    
+
+    @XmlAttribute
+    public int getFollower_count()
+    {
+        return followers.size();
+    }
+
+    @XmlAttribute
+    public int getBark_count()
+    {
+        return barks.size();
+    }
+    
+    @XmlAttribute
+    public int getFollowing_count()
+    {
+        return following.size();
+    }
 
     @XmlTransient
     public Role getPrivilege()

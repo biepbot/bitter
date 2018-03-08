@@ -36,19 +36,26 @@ public class MockingBean
         
         // create default user
         bie = new User("biepbot");
+        bie.setAvatar("https://cdn.discordapp.com/emojis/414037045560999956.png?v=1");
         
         // create users
         User goo = new User("GoodUser5");
+        goo.setAvatar("https://cdn.discordapp.com/emojis/409023321888522246.png?v=1");
         db.save(goo);
         User aba = new User("ABadMeme");
+        aba.setAvatar("https://cdn.discordapp.com/emojis/414410934166093836.png?v=1");
         db.save(aba);
         User kez = new User("Kezter");
+        kez.setAvatar("https://cdn.discordapp.com/emojis/382965733224611840.png?v=1");
         db.save(kez);
         User sad = new User("SadTeen99");
+        sad.setAvatar("https://cdn.discordapp.com/emojis/410463270089261076.png?v=1");
         db.save(sad);
         User don = new User("DonaldBump");
+        don.setAvatar("https://cdn.discordapp.com/emojis/412679200986628118.png?v=1");
         db.save(don);
         User mem = new User("MemeMester");
+        mem.setAvatar("https://cdn.discordapp.com/emojis/375728803206660126.png?v=1");
         db.save(mem);
         
         // attach tweets to users

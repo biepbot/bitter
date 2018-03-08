@@ -72,11 +72,21 @@ function call(type, url, data, callback) {
     xmlHttp.open(type, url, true);
     xmlHttp.send(data);
 }
-
+function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+function elementFromString(htmlString) {
+    var div = document.createElement('div');
+    div.innerHTML = htmlString.trim();
+    return div.firstChild;
+}
+function escapeRegExp(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 // GENERAL FUNCTIONS //
 
 function logout() {
-    call('POST', 'api/sessions/logout', null, function(e, success) {
+    call('POST', 'api/sessions/logout', null, function (e, success) {
     });
 }
