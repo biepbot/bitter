@@ -13,7 +13,7 @@ import javax.ejb.Singleton;
  *
  * @author Rowan
  */
-@Singleton
+@Singleton // act like a single instance at the client side
 public class Validator implements Serializable
 {
     private final int MAX_SIZE = 280;

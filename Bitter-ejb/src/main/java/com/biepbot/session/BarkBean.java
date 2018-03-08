@@ -7,8 +7,8 @@ package com.biepbot.session;
 
 import com.biepbot.base.Bark;
 import com.biepbot.database.PersistentUnit;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,7 +37,7 @@ import javax.ws.rs.core.UriInfo;
 @Stateless
 @Named
 @Path("/barks")
-public class BarkBean extends PersistentUnit implements Serializable
+public class BarkBean extends PersistentUnit
 {
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss", Locale.ENGLISH);
     
@@ -66,7 +66,7 @@ public class BarkBean extends PersistentUnit implements Serializable
         days.add(Calendar.DAY_OF_MONTH, -5);
 
         Map<String, String> params = new HashMap<>();
-        params.put("until", sdf.format(days.getTime()));
+        params.put("before", sdf.format(days.getTime()));
         params.put("orderBy", "rebarks");
         params.put("min_likes", "1");
         params.put("min_rebarks", "1");
@@ -112,7 +112,7 @@ public class BarkBean extends PersistentUnit implements Serializable
      * Searches through barks to match the queries ACCEPTED: 
      * 1. any field 
      * 2. before - date 
-     * 3. until - date 
+     * 3. after - date 
      * 4. orderBy - "rebarks", "likes", "value" 
      * 5. contains - string 6. limit - amount
      * 6. min_rebarks - minimum
@@ -124,6 +124,7 @@ public class BarkBean extends PersistentUnit implements Serializable
     public List<Bark> getSearchResult(Map<String, String> parameters)
     {
         Map<String, Object> par = new HashMap<>();
+        int limit = Integer.MAX_VALUE;
 
         for (Map.Entry<String, String> object : parameters.entrySet())
         {
@@ -133,15 +134,22 @@ public class BarkBean extends PersistentUnit implements Serializable
             switch (key)
             {
                 case "before":
-                case "until":
+                case "after":
                 case "orderBy":
                 case "contains":
-                case "limit":
                 case "min_likes":
                 case "min_rebarks":
                     break;
+                case "limit":
+                    if (value.matches("-?\\d+(\\.\\d+)?")) {
+                        limit = Integer.parseInt(value);
+                        if (limit == 0)
+                            return new ArrayList<>();
+                    }
+                    break;
                 default:
                     par.put(key, value);
+                    break;
             }
         }
 
@@ -152,7 +160,6 @@ public class BarkBean extends PersistentUnit implements Serializable
         // Barks to remove from list later
         Set<Bark> rem = new HashSet<>();
         String order = "";
-        int limit = Integer.MAX_VALUE;
         
         for (Map.Entry<String, String> object : parameters.entrySet())
         {
@@ -179,7 +186,7 @@ public class BarkBean extends PersistentUnit implements Serializable
                     catch (Exception e) 
                     {} // not interested in errors
                     break;
-                case "until":
+                case "after":
                     try {
                         // parse value to calendar
                         Calendar cal = Calendar.getInstance();
@@ -199,6 +206,7 @@ public class BarkBean extends PersistentUnit implements Serializable
                     break;
                 case "orderBy":
                     order = value;
+                    break;
                 case "contains":
                     // check if contains
                     for (Bark b : ret) 
@@ -235,16 +243,12 @@ public class BarkBean extends PersistentUnit implements Serializable
                         }
                     }
                     break;
-                case "limit":
-                    if (value.matches("-?\\d+(\\.\\d+)?")) {
-                        limit = Integer.parseInt(value);
-                    }
-                    break;
             }
         }
         
         // remove all removed
-        ret.removeAll(rem);
+        if (rem.size() > 0)
+            ret.removeAll(rem);
 
         if (!"".equals(order))
         {
@@ -289,8 +293,8 @@ public class BarkBean extends PersistentUnit implements Serializable
             }
         }
 
-        if (limit - 1 < ret.size())
-             ret = ret.subList(0, limit - 1);
+        if (limit - 1 < ret.size() && ret.size() != 1)
+             ret = ret.subList(0, limit);
         return ret;
     }
 }

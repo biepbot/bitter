@@ -31,7 +31,6 @@ public class TestUserBean extends TestEntityHolder
     {
         this.bean = new UserBean();        
         a = new User(tu);
-        changes++;
     }
     
     @Before

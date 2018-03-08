@@ -9,10 +9,13 @@ import com.biepbot.base.Bark;
 import com.biepbot.base.User;
 import com.biepbot.database.PersistentUnit;
 import java.io.File;
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Named;
@@ -30,8 +33,8 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Named
-@Path("/username")
-public class UserBean extends PersistentUnit implements Serializable 
+@Path("/users")
+public class UserBean extends PersistentUnit  
 {    
     @EJB
     private BarkBean bbean;
@@ -50,6 +53,17 @@ public class UserBean extends PersistentUnit implements Serializable
     
     /**
      *
+     * @return a specific username
+     */
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("/all")
+    public User getAllUsers() {
+        return this.<User>getObjectFromQuery(User.class, new HashMap<String, Object>());
+    }
+    
+    /**
+     *
      * @param username the username of the user
      * @return a list of followers of a user
      */
@@ -58,6 +72,30 @@ public class UserBean extends PersistentUnit implements Serializable
     @Path("/{username}/followers")
     public List<User> getUserFollowers(@PathParam("username") String username) {
         return getUser(username).getFollowers();
+    }
+    
+    /**
+     *
+     * @param username the username of the user
+     * @return a list of followers of a user
+     */
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("/{username}/timeline")
+    public List<Bark> getUserTimeline(@PathParam("username") String username) {
+        // todo: optimise
+        User u = getUser(username);
+        
+        List<User> following = u.getFollowing();
+        Set<Bark> tl = new HashSet<>();
+        for (User ur : following) 
+        {
+            tl.addAll(ur.getBarks());
+        }
+        tl.addAll(u.getBarks());
+        List<Bark> ret = new ArrayList<>(tl);
+        Collections.sort(ret);
+        return ret;
     }
     
     /**

@@ -86,6 +86,8 @@ public class User implements Serializable
     
     private String color;
     
+    private String Email;
+    
     public User()
     {
     }
@@ -133,11 +135,12 @@ public class User implements Serializable
     }
     
     /**
-     * Adds a bark (in case of rebarking)
+     * Adds a rebark (in case of rebarking)
      * @param bark
      */
-    public void bark(Bark bark) {
+    public void rebark(Bark bark) {
         barks.add(bark);
+        rebarks.add(bark);
     }
     
     public void addLike(Bark bark) {
@@ -232,6 +235,16 @@ public class User implements Serializable
     public List<Bark> getRebarks()
     {
         return rebarks;
+    }
+
+    public String getEmail()
+    {
+        return Email;
+    }
+
+    public void setEmail(String Email)
+    {
+        this.Email = Email;
     }
     
     @Override

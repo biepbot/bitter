@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 
@@ -26,7 +27,7 @@ import javax.persistence.Temporal;
  */
 @Entity
 @Table
-public class Bark implements Serializable
+public class Bark implements Serializable, Comparable<Bark>
 {
     
     @Id
@@ -51,6 +52,12 @@ public class Bark implements Serializable
     @ManyToMany(mappedBy = "likes")
     private List<User> likers;
     
+    @ManyToOne
+    private Bark repliedTo;
+    
+    @OneToMany(mappedBy = "repliedTo")
+    private List<Bark> replies;
+    
     @Temporal(javax.persistence.TemporalType.DATE)
     private Calendar posttime;
     
@@ -65,6 +72,7 @@ public class Bark implements Serializable
         this.posttime = new GregorianCalendar();
         rebarkers = new ArrayList<>();
         likers = new ArrayList<>();
+        replies = new ArrayList<>();
     }
 
     public String getContent()
@@ -96,7 +104,14 @@ public class Bark implements Serializable
     public void rebark(User rebarked) 
     {
         rebarkers.add(rebarked);
-        rebarked.bark(this);
+        rebarked.rebark(this);
+    }
+    
+    public void replyTo(User replied, String reply)
+    {
+        Bark b = new Bark(replied, reply);
+        b.repliedTo = this;
+        replies.add(b);
     }
 
     public List<User> getRebarkers()
@@ -112,5 +127,11 @@ public class Bark implements Serializable
     public Calendar getPosttime()
     {
         return posttime;
+    }
+
+    @Override
+    public int compareTo(Bark o)
+    {
+        return o.posttime.compareTo(posttime);
     }
 }
