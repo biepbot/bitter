@@ -120,6 +120,64 @@ public class BarkBean
     /**
      *
      * @param barkID
+     * @param user
+     * @return whether the user liked this bark or not
+     */
+    @GET
+    @Produces(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    @Path("/{bark}/likes/{username}")
+    public String getLikedBy(@PathParam("bark") String barkID, @PathParam("username") String user)
+    {
+        Bark b = getBark(barkID);
+        if (b != null)
+        {
+            List<User> users = b.getLikers();
+            for (User u : users)
+            {
+                if (u.getName().equals(user))
+                {
+                    return "1";
+                }
+            }
+        }
+        return "0";
+    }
+
+    /**
+     *
+     * @param barkID
+     * @param user
+     * @return whether the user rebarked this bark or not
+     */
+    @GET
+    @Produces(
+            {
+                MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            })
+    @Path("/{bark}/rebarks/{username}")
+    public String getRebarkedBy(@PathParam("bark") String barkID, @PathParam("username") String user)
+    {
+        Bark b = getBark(barkID);
+        if (b != null)
+        {
+            List<User> users = b.getRebarkers();
+            for (User u : users)
+            {
+                if (u.getName().equals(user))
+                {
+                    return "1";
+                }
+            }
+        }
+        return "0";
+    }
+
+    /**
+     *
+     * @param barkID
      * @return who rebarked this bark
      */
     @GET
