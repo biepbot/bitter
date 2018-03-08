@@ -184,6 +184,6 @@ public class Bark implements Serializable, Comparable<Bark>
     @Override
     public int compareTo(Bark o)
     {
-        return o.posttime.compareTo(posttime);
+        return -o.posttime.compareTo(posttime);
     }
 }

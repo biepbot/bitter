@@ -62,26 +62,28 @@ public class MockingBean
             
             // attach tweets to users
             // and rebarks as well
-            goo.bark("Hey everyone! I just noticed a new feature on Bitter.com, and it's totes awesome!");
+            mem.bark("LOREM IPSUM for 240 characters? Or was it 280... uhh... Why are characters limited anyway?");
             Thread.sleep(2);
-            bie.bark("I need more memes imo.");
-            Thread.sleep(2);
-            aba.bark("Anyone saw that new Black Panty movie?");
-            Thread.sleep(2);
-            kez.bark("Everything is parodied today. It makes me want to paroDI--.. paroKMS.");
-            Thread.sleep(2);
-            sad.bark("If only there were emojies :joy: :sob:");
-            Thread.sleep(2);
-            bie.bark("When was the last time I had breakfast?");
-            Thread.sleep(2);
-            goo.bark("-10C inside, too! Everyone pack up before going anywhere!!!");
+            bie.bark("My friends are gay.");
             Thread.sleep(2);
             don.bark("Something. Sad!");
             Thread.sleep(2);
             don.getBarks().get(0).rebark(bie);
-            bie.bark("My friends are gay.");
+            goo.bark("-10C inside, too! Everyone pack up before going anywhere!!!");
             Thread.sleep(2);
-            mem.bark("LOREM IPSUM for 240 characters? Or was it 280... uhh... Why are characters limited anyway?");
+            bie.bark("When was the last time I had breakfast?");
+            Thread.sleep(2);
+            sad.bark("If only there were emojies :joy: :sob:");
+            Thread.sleep(2);
+            kez.bark("Everything is parodied today. It makes me want to paroDI--.. paroKMS.");
+            Thread.sleep(2);
+            aba.bark("Anyone saw that new Black Panty movie?");
+            Thread.sleep(2);
+            bie.bark("I need more memes imo.");
+            Thread.sleep(2);
+            goo.bark("Hey everyone! I just noticed a new feature on Bitter.com, and it's totes awesome!");
+            Thread.sleep(2);
+            goo.bark("Just like sharks, lol!");
             Thread.sleep(2);
             
             // attach likes
