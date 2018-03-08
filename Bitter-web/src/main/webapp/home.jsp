@@ -38,24 +38,24 @@
                      </div>
                      <div class="profile-info">
                          <div class="username">
-                            <img id="avatar" src="https://cdn.discordapp.com/emojis/414037045560999956.png?v=1"/>
+                            <img id="avatar" src=""/>
                             <div>
-                                <p id="username">Biepbot</p>
-                                <p id="at_username">@biepbot</p>
+                                <p id="username"></p>
+                                <p id="at_username">@</p>
                             </div>
                          </div>
                          <div class="major">
                             <div class="minor">
                                 <p>Barks</p>
-                                <p id="barks_count">3</p>
+                                <p id="barks_count">0</p>
                             </div>
                             <div class="minor">
                                 <p>Following</p>
-                                <p id="following_count">19</p>
+                                <p id="following_count">0</p>
                             </div>
                             <div class="minor">
                                 <p>Followers</p>
-                                <p id="follower_count">2.591</p>
+                                <p id="follower_count">0</p>
                             </div>
                          </div>
                      </div>

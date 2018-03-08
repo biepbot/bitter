@@ -63,6 +63,9 @@ function loadUser() {
             var color = e.color || '#ffec58';
             $('header').style.background = color;
             
+            var avatar = e.avatar || '';
+            $('avatar').src = avatar;
+            
         } else {
             console.log(e);
         }
@@ -108,7 +111,6 @@ function registerElement(element, property)
 
 registerElement($('username'), 'name');
 registerElement($('at_username'), 'name');
-registerElement($('avatar'), 'avatar');
 registerElement($('barks_count'), 'bark_count');
 registerElement($('follower_count'), 'follower_count');
 registerElement($('following_count'), 'following_count');
