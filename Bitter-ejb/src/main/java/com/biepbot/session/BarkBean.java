@@ -27,6 +27,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 /**
@@ -104,8 +105,22 @@ public class BarkBean extends PersistentUnit
     @Path("/search")
     public List<Bark> getSearchResult(@Context UriInfo ui)
     {
-        Map parameters = ui.getQueryParameters();
-        return getSearchResult(parameters);
+        // returns a Map<String, LinkedList<String>>
+        MultivaluedMap<String, String> parameters = ui.getQueryParameters();
+        Map<String, String> params = new HashMap<>();
+        
+        // Turn into usable Map<String, String>
+        Set<String> keys = parameters.keySet();
+        for (String key : keys)
+        {
+            List<String> list = parameters.get(key);
+            for (String value : list)
+            {
+                params.put(key, value);
+            }
+        }        
+        
+        return getSearchResult(params);
     }
 
     /**
@@ -130,7 +145,6 @@ public class BarkBean extends PersistentUnit
         {
             String key = object.getKey();
             String value = object.getValue();
-
             switch (key)
             {
                 case "before":

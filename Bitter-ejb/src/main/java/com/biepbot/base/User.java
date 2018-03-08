@@ -51,6 +51,7 @@ public class User implements Serializable
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "like_id")
     )
+    
     private List<Bark> likes = new ArrayList<>();           // likes
     
     @ManyToMany(cascade = CascadeType.ALL)
@@ -79,14 +80,14 @@ public class User implements Serializable
     
     @Column(nullable = false)
     private Role privilege = Role.user;
+   
+    private String bio = "";
     
-    private String bio;
+    private String location = "";
     
-    private String location;
+    private String color = "";
     
-    private String color;
-    
-    private String Email;
+    private String email = "";
     
     public User()
     {
@@ -239,12 +240,12 @@ public class User implements Serializable
 
     public String getEmail()
     {
-        return Email;
+        return email;
     }
 
     public void setEmail(String Email)
     {
-        this.Email = Email;
+        this.email = Email;
     }
     
     @Override

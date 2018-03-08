@@ -6,7 +6,7 @@
 package com.biepbot.database;
 
 import com.biepbot.database.mocking.LocalEntityManager;
-import javax.ejb.Singleton;
+import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
  *
  * @author Rowan
  */
-@Singleton
+@Stateful
 public class DB
 {
     @PersistenceContext(name = "bitter")
