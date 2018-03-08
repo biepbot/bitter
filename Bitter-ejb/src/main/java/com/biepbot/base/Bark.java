@@ -7,6 +7,8 @@ package com.biepbot.base;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -48,6 +51,9 @@ public class Bark implements Serializable
     @ManyToMany(mappedBy = "likes")
     private List<User> likers;
     
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Calendar posttime;
+    
     public Bark()
     {
     }
@@ -56,6 +62,7 @@ public class Bark implements Serializable
     {
         this.poster = poster;
         this.content = content;
+        this.posttime = new GregorianCalendar();
         rebarkers = new ArrayList<>();
         likers = new ArrayList<>();
     }
@@ -83,10 +90,27 @@ public class Bark implements Serializable
     public void like(User liked) 
     {
         likers.add(liked);
+        liked.addLike(this);
     }
     
     public void rebark(User rebarked) 
     {
         rebarkers.add(rebarked);
+        rebarked.bark(this);
+    }
+
+    public List<User> getRebarkers()
+    {
+        return rebarkers;
+    }
+
+    public List<User> getLikers()
+    {
+        return likers;
+    }
+
+    public Calendar getPosttime()
+    {
+        return posttime;
     }
 }

@@ -10,7 +10,10 @@ import com.biepbot.base.User;
 import com.biepbot.database.PersistentUnit;
 import java.io.File;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Named;
 import javax.ws.rs.FormParam;
@@ -30,6 +33,9 @@ import javax.ws.rs.core.MediaType;
 @Path("/username")
 public class UserBean extends PersistentUnit implements Serializable 
 {    
+    @EJB
+    private BarkBean bbean;
+    
     /**
      *
      * @param username the username of the user
@@ -39,7 +45,7 @@ public class UserBean extends PersistentUnit implements Serializable
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/{username}")
     public User getUser(@PathParam("username") String username) {
-        return (User)getObjectFromQuery(User.class, "name", username);
+        return this.<User>getObjectFromQuery(User.class, "name", username);
     }
     
     /**
@@ -102,8 +108,12 @@ public class UserBean extends PersistentUnit implements Serializable
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/{username}/mentions")
     public List<Bark> getMentions(@PathParam("username") String username) {
-        // TODO: query barks for @name in content
-        return null;
+        if (bbean == null) { // fallback
+            bbean = new BarkBean();
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put("contains", "@" + username);
+        return bbean.getSearchResult(params);
     }
     
     /**

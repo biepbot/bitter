@@ -95,7 +95,7 @@ public class User implements Serializable
         this.name = name;
     }
     
-    public boolean Follow(User user) {
+    public boolean follow(User user) {
         if (!isBlockedBy(user)) {
             user.followers.add(this);
             this.following.add(user);
@@ -118,7 +118,7 @@ public class User implements Serializable
      * @param content
      * @return 
      */
-    public boolean Bark(String content) {
+    public boolean bark(String content) {
         Bark bark = new Bark(this, content);
         
         if (val == null) {
@@ -130,6 +130,18 @@ public class User implements Serializable
             return true;
         }
         return false;
+    }
+    
+    /**
+     * Adds a bark (in case of rebarking)
+     * @param bark
+     */
+    public void bark(Bark bark) {
+        barks.add(bark);
+    }
+    
+    public void addLike(Bark bark) {
+        likes.add(bark);
     }
 
     public String getName()

@@ -7,6 +7,7 @@ package com.biepbot.database.mocking;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityGraph;
@@ -55,8 +56,73 @@ public class LocalEntityManager implements EntityManager
     public void remove(Object entity)
     {
         localCache.remove(entity);
+    }    
+
+    
+    /**
+     * Gets an instance of a class where the field matches the value & name
+     * @param <T>
+     * @param entityClass
+     * @param fieldmap
+     * @return
+     */
+    public <T> List<T> get(Class<T> entityClass, Map<String, Object> fieldmap)
+    {        
+        List<T> ret = new ArrayList<>();
+        try
+        {
+            Map<Field, Object> fields = new HashMap<>();
+            
+            for (Map.Entry<String, Object> object : fieldmap.entrySet())
+            {
+                String key = object.getKey();
+                Object value = object.getValue();             
+                
+                Field field = entityClass.getDeclaredField(key);
+                field.setAccessible(true);
+                fields.put(field, value);
+                
+            }
+                     
+            for (Object o : localCache) {
+                T ot = (T)o;
+                if (ot.getClass().equals(entityClass)) 
+                {
+                    boolean add = true;
+                    for (Map.Entry<Field, Object> entry : fields.entrySet())
+                    {
+                        Field key = entry.getKey();
+                        Object value = entry.getValue();
+                        
+                        if(!key.get(ot).equals(value))
+                        {
+                            add = false;
+                            break;
+                        }
+                        
+                    }
+                    if (add) {
+                         ret.add(ot);
+                    }
+                     
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+        return ret;
     }
     
+    /**
+     * Gets an instance of a class where the field matches the value & name
+     * @param <T>
+     * @param entityClass
+     * @param fieldname
+     * @param fieldvalue
+     * @return
+     */
     public <T> List<T> get(Class<T> entityClass, String fieldname, Object fieldvalue)
     {
         List<T> ret = new ArrayList<>();
@@ -67,7 +133,7 @@ public class LocalEntityManager implements EntityManager
                      
             for (Object o : localCache) {
                 T ot = (T)o;
-                if (ot != null) 
+                if (ot.getClass().equals(entityClass)) 
                 {
                      // USE REFLECTION TO SEE IF FIELDNAME IS THE SAME
                      if(field.get(ot).equals(fieldvalue))
@@ -91,7 +157,7 @@ public class LocalEntityManager implements EntityManager
         {
             for (Object o : localCache) {
                 T ot = (T)o;
-                if (ot != null) 
+                if (o.getClass().equals(entityClass)) 
                 {
                    // USE REFLECTION TO SEE IF FIELD HAS ANNOTATION @ID
                    Field[] fs = entityClass.getDeclaredFields();
@@ -395,6 +461,5 @@ public class LocalEntityManager implements EntityManager
     public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+    }    
 }
