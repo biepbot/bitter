@@ -5,11 +5,14 @@
  */
 package com.biepbot.database.mocking;
 
+import com.biepbot.session.BarkBean;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -32,11 +35,14 @@ import javax.persistence.metamodel.Metamodel;
  */
 public class LocalEntityManager implements EntityManager
 {
+    private static final Logger LOGGER = Logger.getLogger( BarkBean.class.getName() );
+    
     // private static list of all
     private final static List<Object> localCache = new ArrayList<>();
     
     public LocalEntityManager()
     {
+        LOGGER.log(Level.WARNING, "Local Entity Manager used");
     }
     
     

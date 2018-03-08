@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -43,7 +42,6 @@ public class Bark implements Serializable, Comparable<Bark>
     /**
      * the content of the 'tweet'
      */
-    @Column(length = 280)
     private String content;
     
     @ManyToMany(mappedBy = "rebarks")
@@ -127,6 +125,51 @@ public class Bark implements Serializable, Comparable<Bark>
     public Calendar getPosttime()
     {
         return posttime;
+    }
+
+    public Bark getRepliedTo()
+    {
+        return repliedTo;
+    }
+
+    public void setRepliedTo(Bark repliedTo)
+    {
+        this.repliedTo = repliedTo;
+    }
+
+    public List<Bark> getReplies()
+    {
+        return replies;
+    }
+
+    public void setReplies(List<Bark> replies)
+    {
+        this.replies = replies;
+    }
+
+    public void setPoster(User poster)
+    {
+        this.poster = poster;
+    }
+
+    public void setContent(String content)
+    {
+        this.content = content;
+    }
+
+    public void setRebarkers(List<User> rebarkers)
+    {
+        this.rebarkers = rebarkers;
+    }
+
+    public void setLikers(List<User> likers)
+    {
+        this.likers = likers;
+    }
+
+    public void setPosttime(Calendar posttime)
+    {
+        this.posttime = posttime;
     }
 
     @Override

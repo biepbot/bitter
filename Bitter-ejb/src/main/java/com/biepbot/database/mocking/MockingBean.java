@@ -7,8 +7,11 @@ package com.biepbot.database.mocking;
 
 import com.biepbot.base.Bark;
 import com.biepbot.base.User;
-import com.biepbot.database.EntityHolder;
+import com.biepbot.database.DB;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
@@ -18,12 +21,19 @@ import javax.ejb.Startup;
  */
 @Singleton
 @Startup
-public class MockingBean extends EntityHolder
+public class MockingBean
 {
+    private static final Logger LOGGER = Logger.getLogger( MockingBean.class.getName() );
+    
     private User bie;
+    
+    @EJB
+    private DB db;
     
     @PostConstruct
     public void init() {
+        LOGGER.log(Level.WARNING, "DEPLOYING FAKE USERS");
+        
         // create default user
         bie = new User("biepbot");
         
@@ -78,6 +88,6 @@ public class MockingBean extends EntityHolder
         mem.follow(sad);
         
         // save
-        save(bie);
+        db.save(bie);
     }
 }

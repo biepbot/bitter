@@ -9,38 +9,40 @@ import com.biepbot.barking.Validator;
 import com.biepbot.base.Bark;
 import com.biepbot.base.Role;
 import com.biepbot.base.User;
+import com.biepbot.database.DB;
 import com.biepbot.session.UserBean;
 import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import test.base.TestEntityHolder;
 
 /**
  *
  * @author Rowan
  */
-public class TestUserBean extends TestEntityHolder
+public class TestUserBean
 {
     private final UserBean bean;
     User a;
     String tu = "testuser";
+    DB db;
     
     public TestUserBean()
     {
-        this.bean = new UserBean();        
+        this.bean = UserBean.getTestBarkBean();      
         a = new User(tu);
+        db = new DB(true);
     }
     
     @Before
     public void setupUser() {
-        save(a);
+        db.save(a);
     }
     
     @After
     public void tearDownUser() {
-        delete(a);
+        db.delete(a);
     }
     
     // basic user testing
@@ -77,7 +79,7 @@ public class TestUserBean extends TestEntityHolder
     public void checkValidTweet() 
     {        
         boolean res = a.bark("hello world!");
-        update(a);
+        db.update(a);
         User b = bean.getUser(tu);
         Assert.assertTrue(res);                             // Not too long
         Assert.assertFalse(b.getBarks().isEmpty());         // Posted
@@ -88,7 +90,7 @@ public class TestUserBean extends TestEntityHolder
     {        
         User tofollow = new User("follow");
         tofollow.follow(a);
-        update(a);        
+        db.update(a);        
         
         // look at followers
         List<User> afollowers = bean.getUserFollowers(tu);
@@ -100,7 +102,7 @@ public class TestUserBean extends TestEntityHolder
         
         // follow this follower
         a.follow(follower);
-        update(a);
+        db.update(a);
         
         List<User> afollowing = bean.getUserFollowing(tu);
         Assert.assertFalse(afollowing.isEmpty());           // No following
@@ -126,14 +128,14 @@ public class TestUserBean extends TestEntityHolder
         res = a.bark(tl);
         Assert.assertFalse(res);                           // Too long
         
-        update(a); // update
+        db.update(a); // update
         b = bean.getUser(tu);
         Assert.assertTrue(b.getBarks().isEmpty());         // Not posted
         Assert.assertTrue(a.getBarks().isEmpty());         // Not posted
         
         // Post a ok tweet
         res = a.bark("hello world!");
-        update(a);
+        db.update(a);
         b = bean.getUser(tu);
         Assert.assertTrue(res);                             // Not too long
         Assert.assertFalse(b.getBarks().isEmpty());         // Posted
@@ -142,7 +144,7 @@ public class TestUserBean extends TestEntityHolder
         
         // Like own tweet
         barkA.like(a);
-        update(a);
+        db.update(a);
         b = bean.getUser(tu);
         Bark barkB = b.getBarks().get(0);
         Assert.assertFalse(barkB.getLikers().isEmpty());     // Liked
@@ -150,7 +152,7 @@ public class TestUserBean extends TestEntityHolder
         
         // Rebark own tweet
         barkA.rebark(a);
-        update(a);
+        db.update(a);
         b = bean.getUser(tu);
         barkB = b.getBarks().get(0);
         Assert.assertFalse(barkB.getRebarkers().isEmpty());  // Rebarked

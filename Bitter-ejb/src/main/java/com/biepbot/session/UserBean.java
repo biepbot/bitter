@@ -34,10 +34,32 @@ import javax.ws.rs.core.MediaType;
 @Stateless
 @Named
 @Path("/users")
-public class UserBean extends PersistentUnit  
+public class UserBean  
 {    
     @EJB
     private BarkBean bbean;
+    
+    @EJB
+    private PersistentUnit pu;
+    
+    public static UserBean getTestBarkBean()
+    {
+        UserBean b = new UserBean();
+        b.loadPersistanceUnit();
+        return b;
+    }
+    
+    private void loadPersistanceUnit()
+    {
+        if (pu == null)
+        {
+            pu = new PersistentUnit(true);
+        }
+        if (bbean == null) { // fallback
+            bbean = new BarkBean();
+            bbean.loadPersistanceUnit();
+        }
+    }
     
     /**
      *
@@ -48,7 +70,7 @@ public class UserBean extends PersistentUnit
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/{username}")
     public User getUser(@PathParam("username") String username) {
-        return this.<User>getObjectFromQuery(User.class, "name", username);
+        return pu.<User>getObjectFromQuery(User.class, "name", username);
     }
     
     /**
@@ -59,7 +81,7 @@ public class UserBean extends PersistentUnit
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/all")
     public User getAllUsers() {
-        return this.<User>getObjectFromQuery(User.class, new HashMap<String, Object>());
+        return pu.<User>getObjectFromQuery(User.class, new HashMap<String, Object>());
     }
     
     /**
@@ -146,9 +168,6 @@ public class UserBean extends PersistentUnit
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/{username}/mentions")
     public List<Bark> getMentions(@PathParam("username") String username) {
-        if (bbean == null) { // fallback
-            bbean = new BarkBean();
-        }
         Map<String, String> params = new HashMap<>();
         params.put("contains", "@" + username);
         return bbean.getSearchResult(params);

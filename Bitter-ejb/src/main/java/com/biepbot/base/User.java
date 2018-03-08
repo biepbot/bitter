@@ -247,6 +247,36 @@ public class User implements Serializable
     {
         this.email = Email;
     }
+
+    public void setBarks(List<Bark> barks)
+    {
+        this.barks = barks;
+    }
+
+    public void setLikes(List<Bark> likes)
+    {
+        this.likes = likes;
+    }
+
+    public void setRebarks(List<Bark> rebarks)
+    {
+        this.rebarks = rebarks;
+    }
+
+    public void setFollowing(List<User> following)
+    {
+        this.following = following;
+    }
+
+    public void setFollowers(List<User> followers)
+    {
+        this.followers = followers;
+    }
+
+    public void setBlockedUsers(List<User> blockedUsers)
+    {
+        this.blockedUsers = blockedUsers;
+    }
     
     @Override
     public int hashCode()

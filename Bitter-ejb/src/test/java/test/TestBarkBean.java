@@ -7,6 +7,7 @@ package test;
 
 import com.biepbot.base.Bark;
 import com.biepbot.base.User;
+import com.biepbot.database.DB;
 import com.biepbot.session.BarkBean;
 import com.biepbot.session.UserBean;
 import java.text.SimpleDateFormat;
@@ -20,13 +21,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import test.base.TestEntityHolder;
 
 /**
  *
  * @author Rowan
  */
-public class TestBarkBean extends TestEntityHolder
+public class TestBarkBean
 {
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss", Locale.ENGLISH);
     private final UserBean ubean;
@@ -34,18 +34,20 @@ public class TestBarkBean extends TestEntityHolder
     User a;
     Bark b, b1, b2, b3, b4, b5, b6, b7, b8;
     String tu = "testuser";
+    DB db;
     
     public TestBarkBean()
     {
-        this.ubean = new UserBean();        
-        this.bbean = new BarkBean();
+        this.ubean = UserBean.getTestBarkBean();
+        this.bbean = BarkBean.getTestBarkBean();
         a = new User(tu);
+        db = new DB(true);
     }
     
     @Before
     public void setup() {
         // todo: no pasta
-        save(a);
+        db.save(a);
         // Have this user create a bunch of barks;
         b = new Bark(a, "Fresh fish");
         b1 = new Bark(a, "Fresh fish1 @" + tu); // b1 mentions
@@ -57,23 +59,23 @@ public class TestBarkBean extends TestEntityHolder
         b7 = new Bark(a, "Fresh fish7");
         b8 = new Bark(a, "Fresh fish8");
         a.rebark(b);
-        save(b);
+        db.save(b);
         a.rebark(b1);
-        save(b1);
+        db.save(b1);
         a.rebark(b2);
-        save(b2);
+        db.save(b2);
         a.rebark(b3);
-        save(b3);
+        db.save(b3);
         a.rebark(b4);
-        save(b4);
+        db.save(b4);
         a.rebark(b5);
-        save(b5);
+        db.save(b5);
         a.rebark(b6);
-        save(b6);
+        db.save(b6);
         a.rebark(b7);
-        save(b7);
+        db.save(b7);
         a.rebark(b8);
-        save(b8);
+        db.save(b8);
         
         // Create trending barks
         b.like(a);
@@ -81,21 +83,21 @@ public class TestBarkBean extends TestEntityHolder
         b2.like(a);
         b2.rebark(a);
         b3.rebark(a);
-        update(a);
+        db.update(a);
     }
     
     @After
     public void tearDown() {
-        delete(a);
-        delete(b);
-        delete(b1);
-        delete(b2);
-        delete(b3);
-        delete(b4);
-        delete(b5);
-        delete(b6);
-        delete(b7);
-        delete(b8);
+        db.delete(a);
+        db.delete(b);
+        db.delete(b1);
+        db.delete(b2);
+        db.delete(b3);
+        db.delete(b4);
+        db.delete(b5);
+        db.delete(b6);
+        db.delete(b7);
+        db.delete(b8);
     }
     
     @Test 

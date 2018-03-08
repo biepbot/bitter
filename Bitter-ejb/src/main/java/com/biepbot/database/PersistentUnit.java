@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -25,18 +24,20 @@ import javax.persistence.criteria.Root;
  */
 public class PersistentUnit
 {
-    protected EntityManager em;
-
     @EJB
     DB db;
 
+    public PersistentUnit(boolean createDB)
+    {
+        if (createDB)
+        {
+            db = new DB(true);
+        }
+    }
+    
     public PersistentUnit()
     {
-        if (db == null)
-        {
-            db = new DB();
-        }
-        em = db.getEntityManager();
+        
     }
 
     /**
@@ -104,7 +105,7 @@ public class PersistentUnit
      */
     public <T> List<T> getObjectsFromQuery(Class c, Map<String, Object> where)
     {
-        LocalEntityManager lem = (LocalEntityManager) em;
+        LocalEntityManager lem = (LocalEntityManager) db.getEntityManager();
         if (lem != null)
         {
             return lem.<T>get(c, where);
@@ -112,7 +113,7 @@ public class PersistentUnit
         else
         {
             // set up a builder
-            CriteriaBuilder builder = em.getCriteriaBuilder();
+            CriteriaBuilder builder = db.getEntityManager().getCriteriaBuilder();
 
             // begin creating the query
             CriteriaQuery<T> criteria = builder.createQuery(c);
@@ -136,7 +137,7 @@ public class PersistentUnit
             criteria.where(predicates.toArray(new Predicate[]
             {
             }));
-            TypedQuery<T> typed = em.createQuery(criteria);
+            TypedQuery<T> typed = db.getEntityManager().createQuery(criteria);
             return typed.getResultList();
         }
     }

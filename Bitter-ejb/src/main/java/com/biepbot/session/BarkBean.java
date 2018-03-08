@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Named;
 import javax.ws.rs.GET;
@@ -38,9 +39,27 @@ import javax.ws.rs.core.UriInfo;
 @Stateless
 @Named
 @Path("/barks")
-public class BarkBean extends PersistentUnit
+public class BarkBean
 {
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss", Locale.ENGLISH);
+    
+    @EJB
+    private PersistentUnit pu;
+    
+    public static BarkBean getTestBarkBean()
+    {
+        BarkBean b = new BarkBean();
+        b.loadPersistanceUnit();
+        return b;
+    }
+    
+    public void loadPersistanceUnit()
+    {
+        if (pu == null)
+        {
+            pu = new PersistentUnit(true);
+        }
+    }
     
     /**
      * Searches through barks of last week and displays the X major ones
@@ -169,7 +188,7 @@ public class BarkBean extends PersistentUnit
 
         // todo: migrate to seperate functions to remove database load
         // Get all the barks
-        List<Bark> ret = this.<Bark>getObjectsFromQuery(Bark.class, par);
+        List<Bark> ret = pu.<Bark>getObjectsFromQuery(Bark.class, par);
         
         // Barks to remove from list later
         Set<Bark> rem = new HashSet<>();
