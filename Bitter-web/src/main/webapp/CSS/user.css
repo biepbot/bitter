@@ -209,9 +209,11 @@ header .limit-3 {
 /*
     BARK INTERACTIONS
 */
-.bark .bitten {
+.barked .ul-bark,
+.bitten .ul-bite {
     color: #cabb4a;
 }
-.bark .bitten:hover {
+.barked .ul-bark:hover,
+.bitten .ul-bite:hover {
     color: #fff399;
 }
