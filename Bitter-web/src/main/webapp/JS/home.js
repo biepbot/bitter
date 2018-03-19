@@ -51,7 +51,8 @@ data.barktemplate =
         + '        </div>';
 
 function bark(msg) {
-    call('POST', 'api/users/' + data.user.name + '/bark/' + msg, null, function (e, success) {
+    var d = "bark=" + msg;
+    call('POST', 'api/users/' + data.user.name + '/bark', d, function (e, success) {
         if (success) {
             var bark = addBark(JSON.parse(e));
             var b = document.getElementById('barks_count');
@@ -64,7 +65,7 @@ function bark(msg) {
             // show error?
             console.log(e);
         }
-    });
+    }, 1);
     var b2 = document.getElementById('bark');
     b2.value = '';
 }
@@ -114,7 +115,7 @@ function addBark(ei) {
     var t = data.barktemplate;
     t = replaceAll(t, '$avatar', ei.poster['avatar']);
     t = replaceAll(t, '$name', ei.poster['name']);
-    t = replaceAll(t, '$content', ei['content']);
+    t = replaceAll(t, '$content', escapeHtml(ei['content']));
 
     var ele = elementFromString(t);
     ele.id = ei.id;

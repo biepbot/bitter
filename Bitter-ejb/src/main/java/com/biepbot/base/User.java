@@ -175,9 +175,7 @@ public class User implements Serializable
      */
     public void rebark(Bark bark) {
         barks.add(bark);
-        
-        if (bark.getPoster().equals(this))
-            rebarks.add(bark);
+        rebarks.add(bark);
     }
     
     public void addLike(Bark bark) {

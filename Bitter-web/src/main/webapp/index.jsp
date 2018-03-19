@@ -36,9 +36,9 @@
                     <form class="form-signin" action="login" id="signin-form" method="POST">
                         <div class="input-group">
                             <span class="input-group-addon">@</span>
-                            <input type="text" name="username" class="form-control" id="username" placeholder="Username">
+                            <input type="text" name="username" class="form-control" id="j_username" placeholder="Username">
                         </div>
-                        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password">
+                        <input type="password" name="password" id="j_password" class="form-control" placeholder="Password">
                         <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
                         <div id="login-fail" class="fail hidden" onclick="hide(this)"><p>The username or password was incorrect</p></div>
                         <div id="login-error" class="fail hidden" onclick="hide(this)"><p>Unable to connect to our servers</p></div>

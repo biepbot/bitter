@@ -19,6 +19,7 @@ import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Named;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -160,16 +161,17 @@ public class UserBean
      * @return error code
      */
     @POST
+    @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("/{username}/bark/{bark}")
-    public Response bark(@PathParam("username") String username, @PathParam("bark") String tweet) {
+    @Path("/{username}/bark")
+    public Response bark(@PathParam("username") String username, @FormParam("bark") String tweet) {
         User u = getUser(username);
         boolean succ = u.bark(tweet);
         if (succ) {
             pu.save(u);
             return Response.ok(u.getLastBark()).build();
         }
-        return Response.serverError().build();
+        return Response.status(500, "No tweet could be made").build();
     }
     
     /**

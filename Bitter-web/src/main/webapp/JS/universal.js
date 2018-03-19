@@ -58,7 +58,7 @@ function $(id) {
     return document.getElementById(id);
 }
 
-function call(type, url, data, callback) {
+function call(type, url, data, callback, form) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.withCredentials = true;
     xmlHttp.onreadystatechange = function () {
@@ -66,12 +66,15 @@ function call(type, url, data, callback) {
         {
             callback(xmlHttp.responseText, true);
         } else if (xmlHttp.readyState === 4 && xmlHttp.status !== 200) {
-            callback(xmlHttp.status + ' ERROR: ' + xmlHttp.responseText, false);
+            callback(xmlHttp, false);
         }
-    }
+    }    
     xmlHttp.open(type, url, true);
+    if (form == 1)
+        xmlHttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
     xmlHttp.send(data);
 }
+
 function replaceAll(str, find, replace) {
     return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
@@ -89,6 +92,23 @@ function escapeRegExp(str) {
 function logout() {
     call('POST', 'api/sessions/logout', null, function (e, success) {
     });
+}
+
+var entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml (string) {
+  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return entityMap[s];
+  });
 }
 
 /*

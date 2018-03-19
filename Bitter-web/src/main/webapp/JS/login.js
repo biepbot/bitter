@@ -5,21 +5,18 @@
  */
 
 window.onload = function (e) {
-    $('signin-form').addEventListener('submit', svalidate);
+    $('signin-form').addEventListener('submit', login);
 };
 
-function svalidate(e) {
+function login(e) {
     e.preventDefault();
-    var data = "username="+ $('username').value +"&password=" + $('inputPassword').value;
-    call('POST', 'api/sessions/logon?' + data, null, function(e, success) {
-        if (!success) {
-            show($('login-fail')); // 500
-        } else if (e == '') {
+    var data = new FormData(document.getElementById('form-signin'));
+    call('POST', 'j_security_check', data, function (e, success) {
+        if (e.indexOf('401') === -1) {
+            // logon
+            //window.location = 'home.jsp';
+        } else {
             show($('login-fail')); // Could not log in
-        }
-        else {
-            // push user to different screen
-            window.location = 'home.jsp';
         }
     });
 }
