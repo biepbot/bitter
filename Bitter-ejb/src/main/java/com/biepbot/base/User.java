@@ -62,7 +62,7 @@ public class User implements Serializable
     private List<Bark> likes;           
     
     /**
-     * Retweets of a user
+     * Rebarks of a user of their own barks
      */
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "rebark_user",
@@ -165,13 +165,19 @@ public class User implements Serializable
         return false;
     }
     
+    public Bark getLastBark() {
+        return barks.get(barks.size() - 1);
+    }
+    
     /**
      * Adds a rebark (in case of rebarking)
      * @param bark
      */
     public void rebark(Bark bark) {
         barks.add(bark);
-        rebarks.add(bark);
+        
+        if (bark.getPoster().equals(this))
+            rebarks.add(bark);
     }
     
     public void addLike(Bark bark) {
@@ -369,4 +375,14 @@ public class User implements Serializable
         final User other = (User) obj;
         return Objects.equals(this.name, other.name);
     }    
+
+    public void unLike(Bark b)
+    {
+        this.likes.remove(b);
+    }
+    
+    public void unRebark(Bark b)
+    {
+        this.rebarks.remove(b);
+    }
 }

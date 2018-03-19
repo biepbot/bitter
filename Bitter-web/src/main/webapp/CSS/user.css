@@ -217,3 +217,11 @@ header .limit-3 {
 .bitten .ul-bite:hover {
     color: #fff399;
 }
+
+
+p.flash {
+    background: #1B2836;
+}
+.flash.flash-color {
+    background: #3941ad;
+}

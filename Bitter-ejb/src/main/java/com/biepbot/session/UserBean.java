@@ -26,6 +26,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -133,13 +134,6 @@ public class UserBean
     }
     
     /**
-     * RETURN CODES:
-     * 200: OK
-     * 501: BASIC FAIL
-     * 502: TOO BIG
-     * 503: NOT A FILE
-     * 504: COULD NOT REMOVE OLD IMAGE
-     * 
      * @param username the username of the user
      * @param file the form file to update with
      * @return whether the image could be updated or not
@@ -158,6 +152,79 @@ public class UserBean
         // replace with new one
         return 1;
     }    
+    
+    /**
+     *
+     * @param username the username of the user
+     * @param tweet the tweet content
+     * @return error code
+     */
+    @POST
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("/{username}/bark/{bark}")
+    public Response bark(@PathParam("username") String username, @PathParam("bark") String tweet) {
+        User u = getUser(username);
+        boolean succ = u.bark(tweet);
+        if (succ) {
+            pu.save(u);
+            return Response.ok(u.getLastBark()).build();
+        }
+        return Response.serverError().build();
+    }
+    
+    /**
+     *
+     * @param username the username of the user
+     * @param tweet the tweet content
+     * @return error code
+     */
+    @POST
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("/{username}/like/{bark}")
+    public Response like(@PathParam("username") String username, @PathParam("bark") String tweet) {
+        User u = getUser(username);
+        Bark b = bbean.getBark(tweet);
+        boolean succ = b != null;
+        if (succ) {
+            boolean liked = u.getLikes().contains(b);
+            if (liked) {
+                u.unLike(b);
+            } else  {
+                u.addLike(b);
+            }
+            pu.save(u);
+            String response = liked ? "0" : "1";
+            return Response.ok().entity(response).build();
+        }
+        return Response.serverError().build();
+    }
+    
+    /**
+     *
+     * @param username the username of the user
+     * @param tweet the tweet ID
+     * @return error code
+     */
+    @POST
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("/{username}/rebark/{bark}")
+    public Response rebark(@PathParam("username") String username, @PathParam("bark") String tweet) {
+        User u = getUser(username);
+        Bark b = bbean.getBark(tweet);
+        boolean succ = b != null;
+        if (succ) {
+            boolean liked = u.getBarks().contains(b);
+            if (liked) {
+                u.unRebark(b);
+            } else  {
+                u.rebark(b);
+            }
+            pu.save(u);
+            String response = liked ? "0" : "1";
+            return Response.ok().entity(response).build();
+        }
+        return Response.serverError().build();
+    }
     
     /**
      * Returns all mentions to a user, if this is the user requesting them

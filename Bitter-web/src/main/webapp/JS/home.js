@@ -11,6 +11,17 @@
  *  following_count
  *  follower_count
  */
+// Setup
+document.getElementById("bark")
+        .addEventListener("keyup", function (event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                if (this.value)
+                    bark(this.value);
+            }
+        });
+
+
 
 // testing
 var default_user = 'biepbot';
@@ -20,7 +31,7 @@ data.user = {};
 data.user.name = default_user;
 data.register = [];
 data.barktemplate =
-        '<div class="bark">'
+        '<div class="bark flash">'
         + '            <div class="bark-image">'
         + '                <img src="$avatar"/>'
         + '            </div>'
@@ -38,6 +49,25 @@ data.barktemplate =
         + '                </li>'
         + '            </div>'
         + '        </div>';
+
+function bark(msg) {
+    call('POST', 'api/users/' + data.user.name + '/bark/' + msg, null, function (e, success) {
+        if (success) {
+            var bark = addBark(JSON.parse(e));
+            var b = document.getElementById('barks_count');
+            var amount = b.innerHTML;
+            amount++;
+            b.innerHTML = amount;
+            flash(b);
+            flash(bark);
+        } else {
+            // show error?
+            console.log(e);
+        }
+    });
+    var b2 = document.getElementById('bark');
+    b2.value = '';
+}
 
 function loadUser() {
     apicall('GET', 'api/users/' + data.user.name,
@@ -63,6 +93,7 @@ function loadUser() {
 
                 var avatar = e.avatar || '';
                 $('avatar').src = avatar;
+                data.user.avatar = avatar;
             });
 }
 
@@ -73,18 +104,61 @@ function loadTimeline() {
                 for (var i = 0; i < e.length; i++)
                 {
                     var ei = e[i];
-
-                    var t = data.barktemplate;
-                    t = replaceAll(t, '$avatar', ei.poster['avatar']);
-                    t = replaceAll(t, '$name', ei.poster['name']);
-                    t = replaceAll(t, '$content', ei['content']);
-
-                    var ele = elementFromString(t);
-                    $('new-bark').insertAdjacentElement('afterend', ele);
-                    
+                    var ele = addBark(ei);
                     loadBarkDetails(ei.id, ele);
                 }
             });
+}
+
+function addBark(ei) {
+    var t = data.barktemplate;
+    t = replaceAll(t, '$avatar', ei.poster['avatar']);
+    t = replaceAll(t, '$name', ei.poster['name']);
+    t = replaceAll(t, '$content', ei['content']);
+
+    var ele = elementFromString(t);
+    ele.id = ei.id;
+    // add onclick
+    ele.onclick = function (e) {
+        if (hasClass(e.target, 'ul-bite')) {
+            // bite
+            like(e.currentTarget);
+            e.preventDefault();
+        } else if (hasClass(e.target, 'ul-bark')) {
+            // bark
+            rebark(e.currentTarget);
+            e.preventDefault();
+        }
+    }
+
+    $('new-bark').insertAdjacentElement('afterend', ele);
+    return ele;
+}
+
+function like(ele) {
+    apicall('POST', 'api/users/' + data.user.name + '/like/' + ele.id, function (e) {
+        var res = e;
+        if (res === 1) {
+            // like
+            addClass(ele, 'bitten');
+        } else {
+            // unlike
+            removeClass(ele, 'bitten');
+        }
+    });
+}
+
+function rebark(ele) {
+    apicall('POST', 'api/users/' + data.user.name + '/rebark/' + ele.id, function (e) {
+        var res = e;
+        if (res === 1) {
+            // bark
+            addClass(ele, 'barked');
+        } else {
+            // unrebark
+            removeClass(ele, 'barked');
+        }
+    });
 }
 
 // Loads in details of a single bark

@@ -85,6 +85,9 @@ public class MockingBean
             Thread.sleep(2);
             goo.bark("Just like sharks, lol!");
             Thread.sleep(2);
+            bie.bark("AAAAA");
+            
+            bie.getBarks().get(4).like(bie);
             
             // attach likes
             Bark parody = kez.getBarks().get(0);

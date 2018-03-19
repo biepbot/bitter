@@ -143,4 +143,9 @@ public class PersistentUnit
             return typed.getResultList();
         }
     }
+    
+    public void save(Object o) 
+    {
+        db.save(o);
+    }
 }

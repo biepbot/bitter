@@ -47,7 +47,7 @@
                          <div class="major">
                             <div class="minor">
                                 <p>Barks</p>
-                                <p id="barks_count">0</p>
+                                <p class="flash" id="barks_count">0</p>
                             </div>
                             <div class="minor">
                                 <p>Following</p>
@@ -67,7 +67,7 @@
             </div>
             <div class="long-contents">
                 <div id="new-bark" class="new-bark">
-                     <input type="text" name="bark" class="form-control" id="bark" placeholder="What's up?">
+                     <input class="flash" type="text" name="bark" class="form-control" id="bark" placeholder="What's up?">
                 </div>
             </div>
         </div>

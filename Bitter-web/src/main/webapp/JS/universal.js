@@ -90,3 +90,15 @@ function logout() {
     call('POST', 'api/sessions/logout', null, function (e, success) {
     });
 }
+
+/*
+ * Flashing stuff
+ */
+function flash(ele) {
+    if (hasClass(ele, 'flash')) {
+        addClass(ele, 'flash-color');
+        setTimeout(function () {
+            removeClass(ele, 'flash-color');
+        }, parseFloat(getComputedStyle(document.getElementById('barks_count'))['transitionDuration']) * 2000);
+    }
+}
