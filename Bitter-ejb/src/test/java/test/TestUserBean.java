@@ -25,7 +25,7 @@ public class TestUserBean
 {
     private final UserBean bean;
     User a;
-    String tu = "testuser";
+    String tu = "testuser2";
     DB db;
     
     public TestUserBean()
