@@ -8,8 +8,8 @@ package test;
 import com.biepbot.base.Bark;
 import com.biepbot.base.User;
 import com.biepbot.database.DB;
-import com.biepbot.session.BarkBean;
-import com.biepbot.session.UserBean;
+import com.biepbot.session.base.BarkBeanHandler;
+import com.biepbot.session.base.UserBeanHandler;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,8 +30,8 @@ import org.junit.Test;
 public class TestBarkBean
 {
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss", Locale.ENGLISH);
-    private final UserBean ubean;
-    private final BarkBean bbean;
+    private final UserBeanHandler ubean;
+    private final BarkBeanHandler bbean;
     User a;
 
     List<Bark> testBarks = new ArrayList<>();
@@ -42,8 +42,8 @@ public class TestBarkBean
 
     public TestBarkBean()
     {
-        this.ubean = UserBean.getTestBarkBean();
-        this.bbean = BarkBean.getTestBarkBean();
+        this.ubean = new UserBeanHandler(true);
+        this.bbean = new BarkBeanHandler(true);
         a = new User(tu);
         db = new DB(true);
     }

@@ -16,8 +16,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -26,7 +26,27 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Rowan
  */
 @Entity
-@Table
+@NamedQueries(
+        { /* FIX LATER
+            @NamedQuery(name = "search.Before", 
+                        query = "SELECT b FROM Bark b WHERE "
+                        + "b.content LIKE :contents AND "
+                        + "b.posttime <= convert(date,:before)"),
+            @NamedQuery(name = "search.After", 
+                        query = "SELECT b FROM Bark b WHERE "
+                        + "b.content LIKE :contents AND "
+                        + "b.posttime => convert(date,:after)"),
+            @NamedQuery(name = "search.After.Before", 
+                        query = "SELECT b FROM Bark b WHERE "
+                        + "b.content LIKE :contents AND "
+                        + "b.posttime => convert(date,:after) AND "
+                        + "b.posttime <= convert(date,:before)"),
+            @NamedQuery(name = "search", 
+                        query = "SELECT b FROM Bark b WHERE "
+                        + "b.content LIKE :contents AND "
+                        + "b.posttime <= convert(date,:before)")
+       */ }
+)
 public class Bark implements Serializable, Comparable<Bark>
 {
     

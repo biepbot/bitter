@@ -3,27 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.biepbot.barking;
+package com.biepbot.utils;
 
 import com.biepbot.base.Bark;
-import java.io.Serializable;
-import javax.ejb.Singleton;
 
 /**
  *
  * @author Rowan
  */
-@Singleton // act like a single instance at the client side
-public class Validator implements Serializable
+public abstract class Validator
 {
-    private final int MAX_SIZE = 280;
+    private static final int MAX_SIZE = 280;
     
-    
-    public boolean IsBarkProper(Bark bark) {
+    public static boolean IsBarkProper(Bark bark) {
         return bark.getContent().length() <= MAX_SIZE;
     }
     
-    public int GetMaxBark() {
+    public static int GetMaxBark() {
         return MAX_SIZE;
     }
 }

@@ -5,12 +5,12 @@
  */
 package test;
 
-import com.biepbot.barking.Validator;
 import com.biepbot.base.Bark;
 import com.biepbot.base.Role;
 import com.biepbot.base.User;
 import com.biepbot.database.DB;
-import com.biepbot.session.UserBean;
+import com.biepbot.session.base.UserBeanHandler;
+import com.biepbot.utils.Validator;
 import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
@@ -23,14 +23,14 @@ import org.junit.Test;
  */
 public class TestUserBean
 {
-    private final UserBean bean;
+    private final UserBeanHandler bean;
     User a;
     String tu = "testuser2";
     DB db;
     
     public TestUserBean()
     {
-        this.bean = UserBean.getTestBarkBean();      
+        this.bean = new UserBeanHandler(true);
         a = new User(tu);
         db = new DB(true);
     }
@@ -93,7 +93,7 @@ public class TestUserBean
         db.update(a);        
         
         // look at followers
-        List<User> afollowers = bean.getUserFollowers(tu);
+        List<User> afollowers = bean.getUser(tu).getFollowers();
         Assert.assertFalse(afollowers.isEmpty());           // No followers
         
         // get a follower
@@ -104,7 +104,7 @@ public class TestUserBean
         a.follow(follower);
         db.update(a);
         
-        List<User> afollowing = bean.getUserFollowing(tu);
+        List<User> afollowing = bean.getUser(tu).getFollowing();
         Assert.assertFalse(afollowing.isEmpty());           // No following
         follower = afollowing.get(0);                       // get the user "a" is following
         
@@ -115,12 +115,11 @@ public class TestUserBean
     @Test
     public void tweetScenario1() 
     {        
-        Validator val = new Validator();
         User b; boolean res;
         
         // Post a too long tweet
         String tl = ">";
-        for (int i = 0; i < val.GetMaxBark(); i++)
+        for (int i = 0; i < Validator.GetMaxBark(); i++)
         {
             tl += "a";
         }
@@ -148,7 +147,7 @@ public class TestUserBean
         b = bean.getUser(tu);
         Bark barkB = b.getBarks().get(0);
         Assert.assertFalse(barkB.getLikers().isEmpty());     // Liked
-        Assert.assertFalse(bean.getUserLikes(b.getName()).isEmpty());     // Liked
+        Assert.assertFalse(bean.getUser(tu).getLikes().isEmpty());     // Liked
         
         // Rebark own tweet
         barkA.rebark(a);
@@ -156,7 +155,7 @@ public class TestUserBean
         b = bean.getUser(tu);
         barkB = b.getBarks().get(0);
         Assert.assertFalse(barkB.getRebarkers().isEmpty());  // Rebarked
-        Assert.assertFalse(bean.getUserBarks(b.getName()).isEmpty());     // Rebarked
+        Assert.assertFalse(bean.getUser(tu).getRebarks().isEmpty());     // Rebarked
     }
     
     

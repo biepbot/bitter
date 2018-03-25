@@ -35,17 +35,16 @@ import javax.persistence.metamodel.Metamodel;
  */
 public class LocalEntityManager implements EntityManager
 {
-    private static final Logger LOGGER = Logger.getLogger( BarkBean.class.getName() );
-    
+    private static final Logger LOGGER = Logger.getLogger(BarkBean.class.getName());
+
     // private static list of all
     private final static List<Object> localCache = new ArrayList<>();
-    
+
     public LocalEntityManager()
     {
         LOGGER.log(Level.WARNING, "Local Entity Manager used");
     }
-    
-    
+
     @Override
     public void persist(Object entity)
     {
@@ -62,55 +61,68 @@ public class LocalEntityManager implements EntityManager
     public void remove(Object entity)
     {
         localCache.remove(entity);
-    }    
+    }
 
-    
     /**
      * Gets an instance of a class where the field matches the value & name
+     *
      * @param <T>
      * @param entityClass
      * @param fieldmap
      * @return
      */
-    public <T> List<T> get(Class<T> entityClass, Map<String, Object> fieldmap)
-    {        
+    public <T> List<T> get(Class<T> entityClass, Map<String, Object> fieldmap, boolean like)
+    {
         List<T> ret = new ArrayList<>();
         try
         {
             Map<Field, Object> fields = new HashMap<>();
-            
+
             for (Map.Entry<String, Object> object : fieldmap.entrySet())
             {
                 String key = object.getKey();
-                Object value = object.getValue();             
-                
+                Object value = object.getValue();
+
                 Field field = entityClass.getDeclaredField(key);
                 field.setAccessible(true);
                 fields.put(field, value);
-                
+
             }
-                     
-            for (Object o : localCache) {
-                T ot = (T)o;
-                if (ot.getClass().equals(entityClass)) 
+
+            for (Object o : localCache)
+            {
+                T ot = (T) o;
+                if (ot.getClass().equals(entityClass))
                 {
                     boolean add = true;
                     for (Map.Entry<Field, Object> entry : fields.entrySet())
                     {
                         Field key = entry.getKey();
                         Object value = entry.getValue();
-                        
-                        if(!key.get(ot).equals(value))
+
+                        if (like && value instanceof String)
                         {
-                            add = false;
-                            break;
+                            if (!((String) key.get(ot)).contains((String) value))
+                            {
+                                add = false;
+                                break;
+                            }
                         }
-                        
+                        else
+                        {
+                            if (!key.get(ot).equals(value))
+                            {
+                                add = false;
+                                break;
+                            }
+                        }
+
                     }
-                    if (add) {
-                         ret.add(ot);
+                    if (add)
+                    {
+                        ret.add(ot);
                     }
-                     
+
                 }
             }
         }
@@ -120,32 +132,45 @@ public class LocalEntityManager implements EntityManager
         }
         return ret;
     }
-    
+
     /**
      * Gets an instance of a class where the field matches the value & name
+     *
      * @param <T>
      * @param entityClass
      * @param fieldname
      * @param fieldvalue
+     * @param like
      * @return
      */
-    public <T> List<T> get(Class<T> entityClass, String fieldname, Object fieldvalue)
+    public <T> List<T> get(Class<T> entityClass, String fieldname, Object fieldvalue, boolean like)
     {
         List<T> ret = new ArrayList<>();
         try
         {
             Field field = entityClass.getDeclaredField(fieldname);
             field.setAccessible(true);
-                     
-            for (Object o : localCache) {
-                T ot = (T)o;
-                if (ot.getClass().equals(entityClass)) 
+
+            for (Object o : localCache)
+            {
+                T ot = (T) o;
+                if (ot.getClass().equals(entityClass))
                 {
-                     // USE REFLECTION TO SEE IF FIELDNAME IS THE SAME
-                     if(field.get(ot).equals(fieldvalue))
-                     {
-                         ret.add(ot);
-                     }
+                    // USE REFLECTION TO SEE IF FIELDNAME IS THE SAME
+                    if (like && fieldvalue instanceof String)
+                    {
+                        if (((String) field.get(ot)).contains((String) fieldvalue))
+                        {
+                            ret.add(ot);
+                        }
+                    }
+                    else
+                    {
+                        if (field.get(ot).equals(fieldvalue))
+                        {
+                            ret.add(ot);
+                        }
+                    }
                 }
             }
         }
@@ -161,15 +186,17 @@ public class LocalEntityManager implements EntityManager
     {
         try
         {
-            for (Object o : localCache) {
-                T ot = (T)o;
-                if (o.getClass().equals(entityClass)) 
+            for (Object o : localCache)
+            {
+                T ot = (T) o;
+                if (o.getClass().equals(entityClass))
                 {
-                   // USE REFLECTION TO SEE IF FIELD HAS ANNOTATION @ID
-                   Field[] fs = entityClass.getDeclaredFields();
-                   for (Field field : fs) {
+                    // USE REFLECTION TO SEE IF FIELD HAS ANNOTATION @ID
+                    Field[] fs = entityClass.getDeclaredFields();
+                    for (Field field : fs)
+                    {
                         field.setAccessible(true);
-                        if(field.isAnnotationPresent(Id.class))
+                        if (field.isAnnotationPresent(Id.class))
                         {
                             if (field.get(ot).equals(primaryKey))
                             {
@@ -467,5 +494,5 @@ public class LocalEntityManager implements EntityManager
     public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass)
     {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }    
+    }
 }
