@@ -50,6 +50,44 @@ public class UserBean
     {
         return bbh.getUser(username);
     }
+    
+    /**
+     *
+     * @param username the username of the user
+     * @param other the user to follow
+     * @return 
+     */
+    @POST
+    @Path("/{username}/follow/{other}")
+    public String followUser(@PathParam("username") String username, @PathParam("other") String other)
+    {
+        User u = bbh.getUser(username);
+        User them = bbh.getUser(other);
+        u.follow(them);
+        if (u.getFollowing().contains(them)) {
+            return "1";
+        }
+        return "0";
+    }
+    
+    /**
+     *
+     * @param username the username of the user
+     * @param other the user to unfollow
+     * @return 
+     */
+    @POST
+    @Path("/{username}/unfollow/{other}")
+    public String unfollowUser(@PathParam("username") String username, @PathParam("other") String other)
+    {
+        User u = bbh.getUser(username);
+        User them = bbh.getUser(other);
+        u.unfollow(them);
+        if (u.getFollowing().contains(them)) {
+            return "1";
+        }
+        return "0";
+    }
 
     /**
      *

@@ -135,6 +135,12 @@ public class User implements Serializable
         return false;
     }
 
+    public void unfollow(User user)
+    {
+        this.following.remove(user);
+        user.followers.remove(this);
+    }
+
     /**
      *
      * @param u the user

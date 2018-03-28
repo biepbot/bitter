@@ -59,13 +59,13 @@ header a{
     margin-left: 0;
 }
 
-header a,
-header a:active,
-header a:visited {
+a,
+a:active,
+a:visited {
     color: #fff3d1;
     text-decoration: none;
 }
-header a:hover {
+a:hover {
     color: #fff491;
     text-decoration: none;
 }

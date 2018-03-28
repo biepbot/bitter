@@ -20,7 +20,7 @@ document.getElementById("bark")
                     bark(this.value);
             }
         });
-
+document.getElementById('darkener').onclick = hideIfDarkener;
 
 
 // testing
@@ -33,7 +33,7 @@ data.register = [];
 data.barktemplate =
         '<div class="bark flash">'
         + '            <div class="bark-image">'
-        + '                <img src="$avatar"/>'
+        + '                <img src="$avatar" class="user-image"/>'
         + '            </div>'
         + '            <div class="bark-user">'
         + '                @$name'
@@ -51,32 +51,21 @@ data.barktemplate =
         + '        </div>';
 
 function bark(msg) {
-    var d = "bark=" + msg;
-    call('POST', 'api/users/' + data.user.name + '/bark', d, function (e, success) {
-        if (success) {
-            var bark = addBark(JSON.parse(e));
-            var b = document.getElementById('barks_count');
-            var amount = b.innerHTML;
-            amount++;
-            b.innerHTML = amount;
-            flash(b);
-            flash(bark);
-        } else {
-            // show error?
-            console.log(e);
-        }
-    }, 1);
-    var b2 = document.getElementById('bark');
-    b2.value = '';
+    tl.bark(msg);
 }
 
-function loadUser() {
-    apicall('GET', 'api/users/' + data.user.name,
+function loadUser(who, type) {
+    if (who == null)
+        who = data.user.name;
+    if (type == null)
+        type = '';
+
+    apicall('GET', 'api/users/' + who,
             function (e) {
                 for (var i = 0; i < data.register.length; i++)
                 {
                     var r = data.register[i];
-                    var ele = r.element;
+                    var ele = $(type + r.element);
 
                     var val = e[r.value];
                     data[r.value] = val;
@@ -90,119 +79,12 @@ function loadUser() {
 
                 // extra:
                 var color = e.color || '#ffec58';
-                $('header').style.background = color;
+                $(type + 'header').style.background = color;
 
                 var avatar = e.avatar || '';
-                $('avatar').src = avatar;
+                $(type + 'avatar').src = avatar;
                 data.user.avatar = avatar;
             });
-}
-
-// Loads in the Timeline
-function loadTimeline() {
-    apicall('GET', 'api/users/' + data.user.name + '/timeline',
-            function (e) {
-                for (var i = 0; i < e.length; i++)
-                {
-                    var ei = e[i];
-                    var ele = addBark(ei);
-                    loadBarkDetails(ei.id, ele);
-                }
-            });
-}
-
-function addBark(ei) {
-    var t = data.barktemplate;
-    t = replaceAll(t, '$avatar', ei.poster['avatar']);
-    t = replaceAll(t, '$name', ei.poster['name']);
-    t = replaceAll(t, '$content', escapeHtml(ei['content']));
-
-    var ele = elementFromString(t);
-    ele.id = ei.id;
-    // add onclick
-    ele.onclick = function (e) {
-        if (hasClass(e.target, 'ul-bite')) {
-            // bite
-            like(e.currentTarget);
-            e.preventDefault();
-        } else if (hasClass(e.target, 'ul-bark')) {
-            // bark
-            rebark(e.currentTarget);
-            e.preventDefault();
-        }
-    }
-
-    $('new-bark').insertAdjacentElement('afterend', ele);
-    return ele;
-}
-
-function like(ele) {
-    apicall('POST', 'api/users/' + data.user.name + '/like/' + ele.id, function (e) {
-        var res = e;
-        if (res === 1) {
-            // like
-            addClass(ele, 'bitten');
-        } else {
-            // unlike
-            removeClass(ele, 'bitten');
-        }
-    });
-}
-
-function rebark(ele) {
-    apicall('POST', 'api/users/' + data.user.name + '/rebark/' + ele.id, function (e) {
-        var res = e;
-        if (res === 1) {
-            // bark
-            addClass(ele, 'barked');
-        } else {
-            // unrebark
-            removeClass(ele, 'barked');
-        }
-    });
-}
-
-// Loads in details of a single bark
-// id: id of bark
-// ele: element of bark
-function loadBarkDetails(id, ele)
-{
-    apicall('GET', 'api/barks/' + id + '/likes/' + data.user.name, function (e) {
-        removeClass(ele, '$bitten');
-        if (e == 1)
-        {
-            addClass(ele, 'bitten');
-        }
-    });
-
-    apicall('GET', 'api/barks/' + id + '/rebarks/' + data.user.name, function (e) {
-        removeClass(ele, '$barked');
-        if (e == 1)
-        {
-            addClass(ele, 'barked');
-        }
-    });
-}
-
-// Api call method
-function apicall(method, url, callback, data)
-{
-    var tries = 0;
-    function t() {
-        call(method, url, data, function (e, success) {
-            if (success) {
-                e = JSON.parse(e);
-                callback(e);
-            } else {
-                if (++tries < 5) {
-                    t();
-                } else {
-                    console.log(e);
-                }
-            }
-        });
-    }
-    t();
 }
 
 // Registers an element to match with user data
@@ -215,11 +97,286 @@ function registerElement(element, property)
     data.register.push(d);
 }
 
-registerElement($('username'), 'name');
-registerElement($('at_username'), 'name');
-registerElement($('barks_count'), 'bark_count');
-registerElement($('follower_count'), 'follower_count');
-registerElement($('following_count'), 'following_count');
+registerElement('username', 'name');
+registerElement('at_username', 'name');
+registerElement('barks_count', 'bark_count');
+registerElement('follower_count', 'follower_count');
+registerElement('following_count', 'following_count');
 
 loadUser();
-loadTimeline();
+var tl = new Timeline();
+
+function hideIfDarkener(e) {
+    if (e.target.id === 'darkener') {
+        hide(e.target);
+    }
+}
+
+// Objects
+//
+//
+
+// Timeline
+// handles timeline events
+// manages barks
+function Timeline() {
+    // fields
+    this.barks = [];
+
+    Timeline.prototype.load = function () {
+        var me = this;
+        apicall('GET', 'api/users/' + data.user.name + '/timeline',
+                function (e) {
+                    for (var i = 0; i < e.length; i++)
+                    {
+                        // a single bark
+                        var ei = e[i];
+
+                        // turn into object
+                        var bark = new Bark(ei);
+                        me.addBark(bark);
+                    }
+                });
+    };
+
+    Timeline.prototype.bark = function (msg) {
+        var d = "bark=" + msg;
+        var me = this;
+        call('POST', 'api/users/' + data.user.name + '/bark', d, function (e, success) {
+            if (success) {
+                var bark = new Bark(JSON.parse(e));
+                me.addBark(bark);
+                var b = $('barks_count');
+                var amount = b.innerHTML;
+                amount++;
+                b.innerHTML = amount;
+                flash(b);
+                bark.flash();
+            } else {
+                // show error?
+                console.log(e);
+            }
+        }, 1);
+        var b2 = $('bark');
+        b2.value = '';
+    };
+
+    // adds and renders a bark
+    Timeline.prototype.addBark = function (bark) {
+        this.barks.push(bark);
+        bark.render();
+    };
+
+    // mandatory TL load
+    this.load();
+
+    // Bark
+    // handles bark events
+    // handles bark information
+    function Bark(details) {
+        this.id = details.id;
+        this.details = details;
+        this.element = null;
+
+        Bark.prototype.follow = function (un) {
+            var followbtn = $('follow_btn');
+            followbtn.onclick = function(){};
+            followbtn.innerHTML = un === '' ? 'Following...' : 'Unfollowing...';
+            
+            var me = this;
+            call('POST', 'api/users/' + data.user.name + '/' + un + 'follow/' + this.details.poster.name, null, function (e, success) {
+                if (success) {
+                    me.loadOwner();
+                    if (e == 1) {
+                        // show unfollow
+                        followbtn.innerHTML = 'Unfollow';
+                        followbtn.onclick = function () {
+                            follow('un');
+                        };
+                    } else {
+                        // show follow
+                        followbtn.innerHTML = 'Follow';
+                        followbtn.onclick = function () {
+                            follow('');
+                        };
+                    }
+                    flash($('modal-ownerfollower_count'));
+                } else {
+                    // todo: show error?
+                }
+            });
+        }
+
+        // adds an element
+        Bark.prototype.registerElement = function (element) {
+            this.element = element;
+        };
+
+        // Syncs the server with the local bark
+        Bark.prototype.updateStatus = function () {
+            var id = this.id;
+            var ele = this.element;
+            apicall('GET', 'api/barks/' + id + '/likes/' + data.user.name, function (e) {
+                removeClass(ele, '$bitten');
+                if (e == 1)
+                {
+                    addClass(ele, 'bitten');
+                } else {
+                    removeClass(ele, 'bitten');
+                }
+            });
+
+            apicall('GET', 'api/barks/' + id + '/rebarks/' + data.user.name, function (e) {
+                removeClass(ele, '$barked');
+                if (e == 1)
+                {
+                    addClass(ele, 'barked');
+                } else {
+                    removeClass(ele, 'barked');
+                }
+            });
+        };
+
+        // Loads the owner modal information
+        Bark.prototype.loadOwner = function () {
+            var n = this.details.poster.name;
+            var you = n === data.user.name;
+
+            // load in details
+            loadUser(n, 'modal-owner');
+
+            // Load in urls
+
+            // Check if the logged in user is following them, and adjust the follow button accordingly
+            var profile = $('visit_user');
+            var followbtn = $('follow_btn');
+            profile.href = 'users/' + n + '.jsp';
+            if (you) {
+                hide(followbtn);
+                profile.innerHTML = 'Visit your profile';
+            } else {
+                show(followbtn);
+                profile.innerHTML = 'Visit ' + n + '\'s profile';
+
+                var me = this;
+
+                apicall('GET', 'api/users/' + data.user.name + '/following', function (e) {
+                    var follows = false;
+                    for (var i = 0; i < e.length; i++) {
+                        var u = e[i];
+                        if (u.name === n) {
+                            follows = true;
+                            break;
+                        }
+                    }
+                    if (follows) {
+                        // show unfollow
+                        followbtn.innerHTML = 'Unfollow';
+                        followbtn.onclick = function () {
+                            me.follow('un');
+                        };
+                    } else {
+                        // show follow
+                        followbtn.innerHTML = 'Follow';
+                        followbtn.onclick = function () {
+                            me.follow('');
+                        };
+                    }
+                });
+            }
+        }
+
+        // Opens the owner modal
+        Bark.prototype.openOwner = function () {
+            // todo: reload old state of object
+
+            this.loadOwner();
+
+            // show
+            show($('darkener'));
+            show($('modal-owner'));
+            //hide($('big-tweet'));
+        };
+
+        Bark.prototype.openTweet = function () {
+            // todo: open a modal
+        };
+
+        // Returns whether the bark is liked or not
+        Bark.prototype.isLiked = function () {
+            return hasClass(this.element, 'ul-bite');
+        };
+
+        // Returns whether the bark is rebarked or not
+        Bark.prototype.isRebarked = function () {
+            return hasClass(this.element, 'ul-bark');
+        };
+
+        // Likes the bark
+        // toggle function
+        Bark.prototype.like = function () {
+            var id = this.id;
+            var element = this.element;
+            apicall('POST', 'api/users/' + data.user.name + '/like/' + id, function (e) {
+                if (e === 1) {
+                    // like
+                    addClass(element, 'bitten');
+                } else {
+                    // unlike
+                    removeClass(element, 'bitten');
+                }
+            });
+        };
+
+        // Rebarks the bark
+        // toggle function
+        Bark.prototype.rebark = function () {
+            var id = this.id;
+            var element = this.element;
+            apicall('POST', 'api/users/' + data.user.name + '/rebark/' + id, function (e) {
+                if (e === 1) {
+                    // bark
+                    addClass(element, 'barked');
+                } else {
+                    // unrebark
+                    removeClass(element, 'barked');
+                }
+            });
+        };
+
+        // Renders the bark on the screen
+        Bark.prototype.render = function () {
+
+            var t = data.barktemplate;
+            t = replaceAll(t, '$avatar', details.poster['avatar']);
+            t = replaceAll(t, '$name', details.poster['name']);
+            t = replaceAll(t, '$content', escapeHtml(details['content']));
+
+            var ele = elementFromString(t);
+            ele.id = this.id;
+            // add onclick
+
+            var who = this;
+            ele.onclick = function (e) {
+                if (hasClass(e.target, 'ul-bite')) { // on like button click
+                    who.like();
+                } else if (hasClass(e.target, 'ul-bark')) { // on rebark button click
+                    who.rebark();
+                } else if (hasClass(e.target, 'user-image')) { // open profile
+                    who.openOwner();
+                }
+                e.preventDefault();
+            };
+            this.registerElement(ele);
+            $('new-bark').insertAdjacentElement('afterend', ele);
+
+            this.updateStatus();
+        };
+
+        Bark.prototype.flash = function () {
+            flash(this.element);
+        };
+    }
+    ;
+}
+;

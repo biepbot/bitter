@@ -144,7 +144,7 @@ header .limit-3 {
     border-radius: 3px;
     font-size: 14px;
     line-height: 20px;
-    
+
 }
 
 /*
@@ -224,4 +224,71 @@ p.flash {
 }
 .flash.flash-color {
     background: #3941ad;
+}
+
+.bark-image:hover {
+    cursor: pointer;
+}
+
+/*
+    MODALS
+*/
+.darkener {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.3);
+    z-index:1000;
+    top:0;bottom:0;left:0;right:0;
+}
+.modal {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    vertical-align: middle;
+}
+.modal .profile-info {
+    padding: 0;
+}
+.modal .profile-info > * {
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+.modal .small-box {
+    margin: auto;
+    display: inline-block;
+    width: 600px;
+    height: 500px;
+}
+.modal .profile-box {
+    height: 100%;
+}
+.modal .header {
+    height: 170px;
+}
+.modal .minor .medium-text {
+    font-size: 17px;
+    font-weight: 500;
+}
+.modal .minor .small-text {
+    font-size: 12px;
+    font-weight: 300;
+    color: #d2d7dc;
+}
+
+.divider {
+    width: 100%;
+    border-bottom: 1px solid #5b6b7b;
+    margin: 10px 0;
+}
+.major-2 {
+    table-layout: fixed;
+}
+#follow_btn {
+    background: #253961;
+    text-align: center;
+    margin-left: auto;
+    width: 150px;
+}
+#follow_btn p {
+    text-align: center;
+    width: 150px;
 }

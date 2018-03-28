@@ -18,33 +18,33 @@
         <link rel="shortcut icon" type="image/png" href="IMG/bitter-logo.png"/>
     </head>
     <header>
-         <div class="limit-3">
+        <div class="limit-3">
             <div class="link active"><img class="logo" src='IMG/bitter-logo.png' alt=''/><a href="#">Home</a></div>
             <div class="link"><a href="/notifications.jsp">Notifications</a></div>
             <div class="link right"><a href="#">Bark</a></div>
             <div class="link right"><a href="/profile.jsp">Profile</a></div>
             <div class="link right search"><a href="/search.jsp">Search Bitter</a></div>
-         </div>
+        </div>
     </header>
     <body>
         <div class="limit-3">
             <div class="small-box">
                 <div class="profile-box">
-                     <!-- test data -->
-                     <!-- test data -->
-                     <!-- test data -->
-                     <div id="header" class="header">
-                         <img src="https://pbs.twimg.com/profile_banners/3126552135/1490991020/600x200"/>
-                     </div>
-                     <div class="profile-info">
-                         <div class="username">
+                    <!-- test data -->
+                    <!-- test data -->
+                    <!-- test data -->
+                    <div id="header" class="header">
+                        <img src="https://pbs.twimg.com/profile_banners/3126552135/1490991020/600x200"/>
+                    </div>
+                    <div class="profile-info">
+                        <div class="username">
                             <img id="avatar" src=""/>
                             <div>
                                 <p id="username"></p>
                                 <p id="at_username">@</p>
                             </div>
-                         </div>
-                         <div class="major">
+                        </div>
+                        <div class="major">
                             <div class="minor">
                                 <p>Barks</p>
                                 <p class="flash" id="barks_count">0</p>
@@ -57,20 +57,79 @@
                                 <p>Followers</p>
                                 <p id="follower_count">0</p>
                             </div>
-                         </div>
-                     </div>
+                        </div>
+                    </div>
                 </div>
-                     <!-- test data -->
-                     <!-- test data -->
-                     <!-- test data -->
+                <!-- test data -->
+                <!-- test data -->
+                <!-- test data -->
                 <div class="trending-box"></div>
             </div>
             <div class="long-contents">
                 <div id="new-bark" class="new-bark">
-                     <input class="flash" type="text" name="bark" class="form-control" id="bark" placeholder="What's up?">
+                    <input class="flash" type="text" name="bark" class="form-control" id="bark" placeholder="What's up?">
                 </div>
             </div>
-        </div>
-        <script async src="JS/home.js"></script>
+            <!-- darkener -->
+            <div id="darkener" class="darkener hidden">
+                <div id="modal-owner" class="modal">
+                    <!-- user pop-up -->
+
+                    <div class="small-box">
+                        <div class="profile-box">
+                            <!-- test data -->
+                            <!-- test data -->
+                            <!-- test data -->
+                            <div id="modal-ownerheader" class="header">
+                                <img src="https://pbs.twimg.com/profile_banners/3126552135/1490991020/600x200"/>
+                            </div>
+                            <div class="profile-info">
+                                <div class="username">
+                                    <img id="modal-owneravatar" src=""/>
+                                    <div>
+                                        <p id="modal-ownerusername"></p>
+                                        <p id="modal-ownerat_username">@</p>
+                                    </div>
+                                </div>
+                                <div class="major">
+                                    <div class="minor">
+                                        <p>Barks</p>
+                                        <p class="flash" id="modal-ownerbarks_count">0</p>
+                                    </div>
+                                    <div class="minor">
+                                        <p>Following</p>
+                                        <p id="modal-ownerfollowing_count">0</p>
+                                    </div>
+                                    <div class="minor">
+                                        <p>Followers</p>
+                                        <p id="modal-ownerfollower_count" class="flash">0</p>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="major">
+                                    <div class="minor">
+                                        <p class="medium-text">Bio</p>
+                                        <p id="modal-ownerbio" class="small-text">This user has no bio</p>
+                                    </div>
+                                    <div class="minor">
+                                        <p class="medium-text">Website</p>
+                                        <p id="modal-ownerwebsite" class="small-text">No website</p>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="major major-2">
+                                    <div class="minor">
+                                        <a id="visit_user" href="users/">Visit their profile</a>
+                                    </div>
+                                    <div class="minor">
+                                        <div id="follow_btn" class="btn">LOADING</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script async src="JS/home.js"></script>
     </body>
 </html>

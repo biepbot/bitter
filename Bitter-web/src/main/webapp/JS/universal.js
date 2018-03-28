@@ -4,6 +4,78 @@
  * and open the template in the editor.
  */
 
+// Api call method
+function apicall(method, url, callback, data)
+{
+    var tries = 0;
+    function t() {
+        call(method, url, data, function (e, success) {
+            if (success) {
+                e = JSON.parse(e);
+                callback(e);
+            } else {
+                if (++tries < 5) {
+                    t();
+                } else {
+                    console.log(e);
+                }
+            }
+        });
+    }
+    t();
+}
+
+var throttled = [];
+
+function throttle(func, time) {
+    var inarr = false;
+
+    // check if in array
+    for (var i = 0; i < throttled.length; i++) {
+        var f = throttled[i];
+        if (f === func) {
+            inarr = true;
+            break;
+        }
+    }
+
+    // if not
+    if (inarr) {
+        // exec
+        func();
+        setTimeout(function () {
+            // remove from array after timeout
+            // check if next one of this function should be ran
+            timeThrottle(func);
+        }, time);
+    }
+
+    // add to array
+    throttled.push({
+        'func': func,
+        'time': time
+    });
+
+}
+
+function timeThrottle(func) {
+    var delet = false;
+    for (var i = 0; i < throttled.length; i++) {
+        var f = throttled[i];
+        if (f === func) {
+
+            if (!delet) {
+                // delet, this moves the pointer
+                throttle.splice(i, 1);
+                delet = true;
+            } else {
+                // run next function
+                throttle(func, f.time);
+            }
+        }
+    }
+}
+
 function hide(ele, n) {
     if (!n) {
         addClass(ele, 'hidden');
@@ -68,10 +140,10 @@ function call(type, url, data, callback, form) {
         } else if (xmlHttp.readyState === 4 && xmlHttp.status !== 200) {
             callback(xmlHttp, false);
         }
-    }    
+    }
     xmlHttp.open(type, url, true);
     if (form == 1)
-        xmlHttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+        xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xmlHttp.send(data);
 }
 
@@ -95,20 +167,20 @@ function logout() {
 }
 
 var entityMap = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  "'": '&#39;',
-  '/': '&#x2F;',
-  '`': '&#x60;',
-  '=': '&#x3D;'
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;',
+    '`': '&#x60;',
+    '=': '&#x3D;'
 };
 
-function escapeHtml (string) {
-  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
-    return entityMap[s];
-  });
+function escapeHtml(string) {
+    return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+    });
 }
 
 /*
