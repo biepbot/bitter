@@ -49,7 +49,7 @@ barkEle.addEventListener('keyup', function (event) {
     event.preventDefault();
     
     // Only do stuff on change
-    if (this.value === testbark.content) return;
+    if (testbark.parseContent(this.value) === testbark.content) return;
     
     // check if user stopped typing after 200ms
     if (!tt) {
@@ -263,9 +263,10 @@ function Timeline() {
 
         // Sets the content
         Bark.prototype.setContent = function (content) {
+            this.content = this.parseContent(content);
             var c = this.element.getElementsByClassName('bark-content')[0];
-            this.content = content;
             content = urlify(escapeHtml(content));
+            content = content.replace(/\n/g, '<br />');
             c.innerHTML = content;
 
             if (!this.isLoadingPreview) {
@@ -288,6 +289,14 @@ function Timeline() {
                     this.isLoadingPreview = false;
                 }
             }
+        };
+        
+        // Parse the content before upload (also after)
+        Bark.prototype.parseContent = function(content) {
+            while (content.indexOf('\n\n\n') > -1) {
+                content = content.replace(/\n\n\n/g, '\n\n'); // force max newlines of two
+            }
+            return content;
         };
         
         // adds an element

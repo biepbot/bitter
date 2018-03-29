@@ -67,7 +67,7 @@
             </div>
             <div class="long-contents">
                 <div id="new-bark" class="new-bark">
-                    <input class="flash" type="text" name="bark" class="form-control" id="bark" placeholder="What's up?">
+                    <textarea class="form-control" id="bark" placeholder="What's up?"></textarea>
                     <div id="bark-button" class="btn" onclick="bark()">Bark</div>
                     <p class="special">Preview</p>
                     <div id="test-bark" class="bark flash">
