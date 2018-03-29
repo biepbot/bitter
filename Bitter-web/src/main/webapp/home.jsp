@@ -68,6 +68,24 @@
             <div class="long-contents">
                 <div id="new-bark" class="new-bark">
                     <input class="flash" type="text" name="bark" class="form-control" id="bark" placeholder="What's up?">
+                    <div id="bark-button" class="btn" onclick="bark()">Bark</div>
+                    <p class="special">Preview</p>
+                    <div id="test-bark" class="bark flash">
+                        <div class="bark-image">
+                            <img id="test-avatar" class="user-image"/>
+                        </div>
+                        <div id="test-username" class="bark-user">
+                        </div>
+                        <div id="test-content" class="bark-content">
+                        </div>
+                        <div class="bark-interact">
+                            <li>
+                                <ul class="ul-bite"><span class="fa fa-bolt"></span>bite</ul>
+                                <ul class="ul-bark"><span class="fa fa-share-alt"></span>bark</ul>
+                                <ul><span class="fa fa-reply"></span>reply</ul>
+                            </li>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- darkener -->

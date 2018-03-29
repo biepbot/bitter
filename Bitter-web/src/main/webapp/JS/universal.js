@@ -75,6 +75,19 @@ function timeThrottle(func) {
         }
     }
 }
+function urlify(str) {
+    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    var change = str.replace(urlRegex, function (url) {
+        if (checkImgUrl(url)) {
+            return '<a href="' + url + '" target="_blank"><img src="' + url + '"/></a>';
+        }
+        return '<a href="' + url + '">' + url + '</a>';
+    });
+    return change;
+}
+function checkImgUrl(url) {
+    return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+}
 
 function hide(ele, n) {
     if (!n) {
@@ -132,7 +145,7 @@ function $(id) {
 
 function call(type, url, data, callback, form) {
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.withCredentials = true;
+    //xmlHttp.withCredentials = true;
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
         {
@@ -158,6 +171,25 @@ function elementFromString(htmlString) {
 function escapeRegExp(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
+function getPreview(url, callback, keyind) {
+    var keys = ['5abcdc48048aa19df34e5a4cbdb9c7a41acd3fbd71222',
+        '5abcc3fa4ca406792ca026fefaf3a63297638dca900e9',
+        '5abcdc4a46cbb8b4a91fc31792de78bf05bd0e87a23df'];
+    if (keyind == null)
+        keyind = 0;
+    var key = keys[keyind];
+
+    var callurl = 'http://api.linkpreview.net/?key=' + key + '&q=' + url;
+    call('GET', callurl, null, function (e, succ) {
+        if (succ) {
+            callback(e, succ);
+        } else {
+            keyind++;
+            if (keyind < keys.length)
+                getPreview(url, callback, keyind);
+        }
+    });
+}
 
 // GENERAL FUNCTIONS //
 
@@ -167,18 +199,12 @@ function logout() {
 }
 
 var entityMap = {
-    '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-    '/': '&#x2F;',
-    '`': '&#x60;',
-    '=': '&#x3D;'
 };
 
 function escapeHtml(string) {
-    return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return String(string).replace(/[<>]/g, function (s) {
         return entityMap[s];
     });
 }

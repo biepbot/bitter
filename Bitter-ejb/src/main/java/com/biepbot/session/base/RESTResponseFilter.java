@@ -41,7 +41,7 @@ public class RESTResponseFilter implements ContainerResponseFilter
 
         // IF GET
         Method m = resourceInfo.getResourceMethod();
-        if (m.getName().startsWith("get"))
+        if (m.getName().equals("getLikedBy") || m.getName().equals("getRebarkedBy"))
         {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             sdf.setTimeZone(TimeZone.getTimeZone("GMT"));

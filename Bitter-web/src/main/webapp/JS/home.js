@@ -11,17 +11,6 @@
  *  following_count
  *  follower_count
  */
-// Setup
-document.getElementById("bark")
-        .addEventListener("keyup", function (event) {
-            event.preventDefault();
-            if (event.keyCode === 13) {
-                if (this.value)
-                    bark(this.value);
-            }
-        });
-document.getElementById('darkener').onclick = hideIfDarkener;
-
 
 // testing
 var default_user = 'biepbot';
@@ -50,8 +39,50 @@ data.barktemplate =
         + '            </div>'
         + '        </div>';
 
-function bark(msg) {
-    tl.bark(msg);
+// Setup
+var tl = new Timeline();
+var testbark = document.getElementById('test-bark');
+testbark = tl.getPreviewBark(testbark);
+
+var barkEle = document.getElementById('bark');
+barkEle.addEventListener('keyup', function (event) {
+    event.preventDefault();
+    
+    // Only do stuff on change
+    if (this.value === testbark.content) return;
+    
+    // check if user stopped typing after 200ms
+    if (!tt) {
+        tt = true;
+        setTimeout(afterType, delay);
+    }
+
+    // user is typing right now
+    typing = true;
+
+});
+document.getElementById('darkener').onclick = hideIfDarkener;
+
+// Type timeout functions
+var delay = 500;
+var tt = false;
+var typing = false;
+function afterType() {
+    if (!typing) {
+        testbark.setContent(barkEle.value);
+        tt = false;
+    } else {
+        typing = false;
+        setTimeout(afterType, delay);
+    }
+}
+
+// Public functions
+function bark() {
+    if (barkEle.value) {
+        tl.bark(barkEle.value);
+        testbark.clear();
+    }
 }
 
 function loadUser(who, type) {
@@ -71,7 +102,8 @@ function loadUser(who, type) {
                     data[r.value] = val;
 
                     if (val !== '') {
-                        ele.innerHTML = val;
+                        if (ele)
+                            ele.innerHTML = val;
                     } else {
                         hide(ele);
                     }
@@ -79,12 +111,22 @@ function loadUser(who, type) {
 
                 // extra:
                 var color = e.color || '#ffec58';
-                $(type + 'header').style.background = color;
+                var header = $(type + 'header');
+                if (header)
+                    header.style.background = color;
 
-                var avatar = e.avatar || '';
-                $(type + 'avatar').src = avatar;
-                data.user.avatar = avatar;
+                var a = e.avatar || '';
+                var avatar = $(type + 'avatar');
+                if (avatar)
+                    avatar.src = a;
+                data.user.avatar = a;
             });
+}
+
+function hideIfDarkener(e) {
+    if (e.target.id === 'darkener') {
+        hide(e.target);
+    }
 }
 
 // Registers an element to match with user data
@@ -97,6 +139,8 @@ function registerElement(element, property)
     data.register.push(d);
 }
 
+// Setup through functions
+
 registerElement('username', 'name');
 registerElement('at_username', 'name');
 registerElement('barks_count', 'bark_count');
@@ -104,13 +148,7 @@ registerElement('follower_count', 'follower_count');
 registerElement('following_count', 'following_count');
 
 loadUser();
-var tl = new Timeline();
-
-function hideIfDarkener(e) {
-    if (e.target.id === 'darkener') {
-        hide(e.target);
-    }
-}
+loadUser(null, 'test-');
 
 // Objects
 //
@@ -167,6 +205,15 @@ function Timeline() {
         bark.render();
     };
 
+    Timeline.prototype.getPreviewBark = function (element) {
+        var details = {'id': -1};
+
+        var b = new Bark(details);
+        b.registerElement(element);
+
+        return b;
+    }
+
     // mandatory TL load
     this.load();
 
@@ -178,11 +225,13 @@ function Timeline() {
         this.details = details;
         this.element = null;
 
+        this.isLoadingPreview = false;
+
         Bark.prototype.follow = function (un) {
             var followbtn = $('follow_btn');
-            followbtn.onclick = function(){};
+            followbtn.onclick = function () {};
             followbtn.innerHTML = un === '' ? 'Following...' : 'Unfollowing...';
-            
+
             var me = this;
             call('POST', 'api/users/' + data.user.name + '/' + un + 'follow/' + this.details.poster.name, null, function (e, success) {
                 if (success) {
@@ -205,8 +254,42 @@ function Timeline() {
                     // todo: show error?
                 }
             });
-        }
+        };
 
+        // Clears the contents of a bark
+        Bark.prototype.clear = function () {
+            this.setContent('');
+        };
+
+        // Sets the content
+        Bark.prototype.setContent = function (content) {
+            var c = this.element.getElementsByClassName('bark-content')[0];
+            this.content = content;
+            content = urlify(escapeHtml(content));
+            c.innerHTML = content;
+
+            if (!this.isLoadingPreview) {
+                this.isLoadingPreview = true;
+
+                // get urls in content
+                var urls = getUrls(content);
+                if (urls.length) {
+                    var who = this;
+                    for (var i = 0; i < urls.length; i++) {
+                        var u = urls[i];
+                        getPreview(u, function (e, succ) {
+                            if (succ) {
+                                who.loadPreviewFromJSON(e, u);
+                            }
+                            who.isLoadingPreview = false;
+                        });
+                    }
+                } else {
+                    this.isLoadingPreview = false;
+                }
+            }
+        };
+        
         // adds an element
         Bark.prototype.registerElement = function (element) {
             this.element = element;
@@ -344,19 +427,71 @@ function Timeline() {
             });
         };
 
+        // Add rich text preview
+        Bark.prototype.addPreview = function (original, title, desc, image, url) {
+            var c = this.element.getElementsByClassName('bark-content')[0];
+            var original2 = original.replace(/\/+$/, "");
+
+            // delete the link
+            original = '<a href="' + original + '">' + original + '</a>';
+            original2 = '<a href="' + original2 + '">' + original2 + '</a>';
+            c.innerHTML = c.innerHTML.replace(original, '');
+            c.innerHTML = c.innerHTML.replace(original2, '');
+
+            // add the preview
+            var div = document.createElement('a');
+            div.href = url;
+            addClass(div, 'rich-preview');
+
+            var t = document.createElement('p');
+            t.innerHTML = title;
+            div.appendChild(t);
+
+            var d = document.createElement('p');
+            d.innerHTML = desc;
+            div.appendChild(d);
+
+            var div2 = document.createElement('div');
+            var i = document.createElement('img');
+            i.src = image;
+            addClass(div2, 'preview-image');
+            div2.appendChild(i);
+            div.appendChild(div2);
+
+            c.insertAdjacentElement('beforeend', div);
+        };
+
+        // Wrapper function for loading preview from JSON data
+        Bark.prototype.loadPreviewFromJSON = function (json, url) {
+            json = JSON.parse(json);
+            this.addPreview(url, json.title, json.description, json.image, json.url);
+        };
+
+        function getUrls(content) {
+            var d = document.createElement('div');
+            d.innerHTML = content;
+
+            var as = d.getElementsByTagName('A');
+            var urls = [];
+            for (var i = 0; i < as.length; i++) {
+                if (as[i].children.length === 0)
+                    urls.push(as[i].href);
+            }
+            return urls;
+        };
+
         // Renders the bark on the screen
         Bark.prototype.render = function () {
 
+            var who = this;
             var t = data.barktemplate;
             t = replaceAll(t, '$avatar', details.poster['avatar']);
             t = replaceAll(t, '$name', details.poster['name']);
-            t = replaceAll(t, '$content', escapeHtml(details['content']));
 
             var ele = elementFromString(t);
             ele.id = this.id;
             // add onclick
 
-            var who = this;
             ele.onclick = function (e) {
                 if (hasClass(e.target, 'ul-bite')) { // on like button click
                     who.like();
@@ -365,12 +500,12 @@ function Timeline() {
                 } else if (hasClass(e.target, 'user-image')) { // open profile
                     who.openOwner();
                 }
-                e.preventDefault();
             };
             this.registerElement(ele);
             $('new-bark').insertAdjacentElement('afterend', ele);
 
             this.updateStatus();
+            this.setContent(details['content']);
         };
 
         Bark.prototype.flash = function () {
