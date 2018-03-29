@@ -192,6 +192,21 @@ function getPreview(url, callback, keyind) {
 }
 
 // GENERAL FUNCTIONS //
+var els = [];
+function saveElement(ele) {
+    els.push({
+        'id' : ele.id,
+        'savedState' : ele.cloneNode(true)
+    });
+}
+function restoreElement(ele) {
+    for (var i = 0; i < els.length; i++) {
+        var e = els[i];
+        if (e.id === ele.id) {
+            ele.parentNode.replaceChild(e.savedState, ele);
+        }
+    }
+}
 
 function logout() {
     call('POST', 'api/sessions/logout', null, function (e, success) {

@@ -50,15 +50,6 @@ public class UserBeanHandler extends BeanHandler
     
     /**
      *
-     * @param username the username of the user
-     * @return a specific username
-     */
-    public User getUser(String username) {
-        return pu.<User>getObjectFromQuery(User.class, "name", username, false);
-    }
-    
-    /**
-     *
      * @return a specific username
      */
     public User getAllUsers() {

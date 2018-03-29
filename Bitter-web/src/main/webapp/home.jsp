@@ -89,7 +89,7 @@
                 </div>
             </div>
             <!-- darkener -->
-            <div id="darkener" class="darkener hidden">
+            <div id="darkener" class="darkener hidden" onclick="hideIfDarkener(event)">
                 <div id="modal-owner" class="modal">
                     <!-- user pop-up -->
 
@@ -145,6 +145,34 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                
+                <div id="big-bark" class="modal">
+                    <!-- bark pop-up -->
+                    <div id="modal-bark-bark" class="bark">
+                        <div class="bark-image">
+                            <img id="modal-avatar" class="user-image"/>
+                        </div>
+                        <div id="modal-bark-username" class="bark-user">
+                        </div>
+                        <div id="modal-bark-content" class="bark-content">
+                        </div>
+                        <div class="bark-interact">
+                            <li>
+                                <ul class="ul-bite"><span class="fa fa-bolt"></span>bite</ul>
+                                <ul class="ul-bark"><span class="fa fa-share-alt"></span>bark</ul>
+                            </li>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <textarea id="modal-reply" placeholder="Reply..."></textarea>
+                        <div id="modal-reply-button" class="btn">Reply</div>
+                    </div>
+                    <div class="divider"></div>
+                    <div id="modal-bark-replies">
+                        <div id="modal-replies"></div>
                     </div>
                 </div>
             </div>

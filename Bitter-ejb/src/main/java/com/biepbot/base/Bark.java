@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -71,10 +72,10 @@ public class Bark implements Serializable, Comparable<Bark>
     @ManyToMany(mappedBy = "likes")
     private List<User> likers;
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Bark repliedTo;
     
-    @OneToMany(mappedBy = "repliedTo")
+    @OneToMany(mappedBy = "repliedTo", cascade = CascadeType.PERSIST)
     private List<Bark> replies;
     
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -131,11 +132,12 @@ public class Bark implements Serializable, Comparable<Bark>
         rebarked.rebark(this);
     }
     
-    public void replyTo(User replied, String reply)
+    public Bark replyTo(User replied, String reply)
     {
         Bark b = new Bark(replied, reply);
         b.repliedTo = this;
         replies.add(b);
+        return b;
     }
 
     @XmlTransient

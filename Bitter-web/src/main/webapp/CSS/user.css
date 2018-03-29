@@ -139,7 +139,7 @@ p.special {
     background: #2d354a;
     padding: 10px;
 }
-.new-bark #bark {
+textarea{
     width: 97%;
     border: 1px solid #3d3d66;
     color: #fff;
@@ -159,9 +159,19 @@ p.special {
     color: #fff;
     padding: 10px;
     border-top: 1px solid #000;
+    background: #1B2836;
 }   
+.modal {
+    background: #1B2836;
+}
+.modal textarea {
+    margin: 0 10px;
+    display: inline-block;
+    box-sizing:border-box;
+}
 .bark:hover {
     background: #19242f;
+    cursor: pointer;
 }
 
 .bark li {
@@ -175,7 +185,6 @@ p.special {
 }
 .bark ul:hover {
     color: #7bfff4;
-    cursor: pointer;
 }
 
 .bark-user,
@@ -192,9 +201,6 @@ p.special {
 }
 .bark-content img {
     max-width: 100%;
-}
-#test-bark {
-    background: #1B2836;
 }
 
 .bark-user {
@@ -250,6 +256,16 @@ p.flash {
 /*
     MODALS
 */
+.modal .btn {
+    background: #253961;
+    text-align: center;
+    margin-left: auto;
+    margin-right: 10px;
+    width: 150px;
+}
+.no-overflow {
+    overflow: hidden;
+}
 .darkener {
     position: fixed;
     background: rgba(0, 0, 0, 0.3);
@@ -261,6 +277,8 @@ p.flash {
     align-items: center;
     display: flex;
     vertical-align: middle;
+    overflow: auto;
+    padding: 65px;
 }
 .darkener.hidden {
     display:none;
@@ -324,6 +342,14 @@ p.flash {
 #follow_btn p {
     text-align: center;
     width: 150px;
+}
+
+/*
+    Bark modals
+*/
+.modal .bark {    
+    margin: auto;
+    width: 600px;
 }
 
 /* 

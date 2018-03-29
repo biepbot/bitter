@@ -14,7 +14,10 @@ import java.util.Locale;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Named;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -115,6 +118,22 @@ public class BarkBean
     public List<Bark> getReplies(@PathParam("bark") String barkID)
     {
         return bbh.getReplies(barkID);
+    }
+
+    /**
+     *
+     * @param barkID
+     * @param username
+     * @param content
+     * @return the replies to this bark
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Path("/{bark}/replyAs/{username}")
+    public Bark replyTo(@PathParam("bark") String barkID, @PathParam("username") String username, @FormParam("content") String content)
+    {
+        // todo: JAAS
+        return bbh.replyTo(barkID, username, content);
     }
 
     /**

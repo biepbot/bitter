@@ -77,6 +77,17 @@ public class BarkBeanHandler extends BeanHandler
         params.put("limit", String.valueOf(amnt));
         return getSearchResult(params);
     }
+    
+    /**
+     *
+     * @param id
+     * @param user
+     * @param what
+     * @return
+     */
+    public Bark replyTo(String id, String user, String what) {
+        return getBark(id).replyTo(getUser(user), what);
+    }
 
     /**
      *

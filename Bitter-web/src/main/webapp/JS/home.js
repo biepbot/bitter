@@ -41,16 +41,17 @@ data.barktemplate =
 
 // Setup
 var tl = new Timeline();
-var testbark = document.getElementById('test-bark');
+var testbark = $('test-bark');
 testbark = tl.getPreviewBark(testbark);
 
-var barkEle = document.getElementById('bark');
+var barkEle = $('bark');
 barkEle.addEventListener('keyup', function (event) {
     event.preventDefault();
-    
+
     // Only do stuff on change
-    if (testbark.parseContent(this.value) === testbark.content) return;
-    
+    if (testbark.parseContent(this.value) === testbark.content)
+        return;
+
     // check if user stopped typing after 200ms
     if (!tt) {
         tt = true;
@@ -61,7 +62,8 @@ barkEle.addEventListener('keyup', function (event) {
     typing = true;
 
 });
-document.getElementById('darkener').onclick = hideIfDarkener;
+var d = $('darkener');
+saveElement(d);
 
 // Type timeout functions
 var delay = 500;
@@ -126,6 +128,9 @@ function loadUser(who, type) {
 function hideIfDarkener(e) {
     if (e.target.id === 'darkener') {
         hide(e.target);
+        removeClass(document.body, 'no-overflow');
+        var parent = $('modal-bark-replies');
+        parent.innerHTML = '<div id="modal-replies"></div>'; // clear
     }
 }
 
@@ -224,6 +229,7 @@ function Timeline() {
         this.id = details.id;
         this.details = details;
         this.element = null;
+        this.replies = [];
 
         this.isLoadingPreview = false;
 
@@ -265,9 +271,26 @@ function Timeline() {
         Bark.prototype.setContent = function (content) {
             this.content = this.parseContent(content);
             var c = this.element.getElementsByClassName('bark-content')[0];
-            content = urlify(escapeHtml(content));
-            content = content.replace(/\n/g, '<br />');
+            content = this.nicifyContent(content);
+            // now set the content accordingly
             c.innerHTML = content;
+        };
+
+        // Parse the content before upload (also after)
+        Bark.prototype.parseContent = function (content) {
+            while (content.indexOf('\n\n\n') > -1) {
+                content = content.replace(/\n\n\n/g, '\n\n'); // force max newlines of two
+            }
+            return content;
+        };
+
+        // Adds all markup and all previews to the content
+        Bark.prototype.nicifyContent = function (content) {
+            // support any brackets and such
+            content = urlify(escapeHtml(content));
+
+            // support newlines
+            content = content.replace(/\n/g, '<br />');
 
             if (!this.isLoadingPreview) {
                 this.isLoadingPreview = true;
@@ -289,16 +312,16 @@ function Timeline() {
                     this.isLoadingPreview = false;
                 }
             }
-        };
-        
-        // Parse the content before upload (also after)
-        Bark.prototype.parseContent = function(content) {
-            while (content.indexOf('\n\n\n') > -1) {
-                content = content.replace(/\n\n\n/g, '\n\n'); // force max newlines of two
-            }
+
+            // change @username to a's for linking and colours
+            var usernames = /@[a-zA-Z0-9]{0,}/g;
+            content = content.replace(usernames, function (user) {
+                user = user.replace('@', '');
+                return '<a href="users/' + user + '.jsp">@' + user + '</a>';
+            });
             return content;
         };
-        
+
         // adds an element
         Bark.prototype.registerElement = function (element) {
             this.element = element;
@@ -376,22 +399,88 @@ function Timeline() {
                     }
                 });
             }
-        }
+        };
+
+        // Load in the bark modal
+        Bark.prototype.loadBark = function () {
+            var img = $('modal-avatar');
+            img.src = this.details.poster.avatar;
+
+            var cnt = $('modal-bark-content');
+            cnt.innerHTML = this.content;
+
+            var use = $('modal-bark-username');
+            use.innerHTML = this.details.poster.name;
+
+            var rep = $('modal-reply-button');
+
+            var who = this;
+            var id = this.id;
+            rep.onclick = function () {
+                var v = $('modal-reply').value;
+                if (v !== '') {
+                    // reply to
+                    var d = "content=" + v;
+                    call('POST', 'api/barks/' + id + '/replyAs/' + data.user.name, d, function (e, success) {
+                        if (success) {
+                            who.replies.push(JSON.parse(e));
+                            var bark = new Bark(JSON.parse(e));
+                            var b = $('barks_count');
+                            var amount = b.innerHTML;
+                            amount++;
+                            b.innerHTML = amount;
+                            flash(b);
+
+                            var where = $('modal-replies');
+                            bark.render(where);
+                            bark.flash();
+                        } else {
+                            // show error?
+                            console.log(e);
+                        }
+                    }, 1);
+                }
+                $('modal-reply').value = '';
+            };
+
+            // load in reply barks
+            if (this.replies.length === 0) {
+                var who = this;
+                // load
+                apicall('GET', 'api/barks/' + this.id + '/replies', function (e) {
+                    who.replies = e;
+                    who.renderReplies();
+                });
+            } else {
+                // use old cache
+                this.renderReplies();
+            }
+        };
 
         // Opens the owner modal
         Bark.prototype.openOwner = function () {
-            // todo: reload old state of object
+            // reload old state of object
+            restoreElement($('darkener'));
 
             this.loadOwner();
 
             // show
             show($('darkener'));
             show($('modal-owner'));
-            //hide($('big-tweet'));
+            hide($('big-bark'));
         };
 
-        Bark.prototype.openTweet = function () {
-            // todo: open a modal
+        Bark.prototype.openBark = function () {
+            // reload old state of object
+            restoreElement($('darkener'));
+
+            this.loadBark();
+
+            // show
+            show($('darkener'));
+            hide($('modal-owner'));
+            show($('big-bark'));
+            addClass(document.body, 'no-overflow');
         };
 
         // Returns whether the bark is liked or not
@@ -487,10 +576,23 @@ function Timeline() {
                     urls.push(as[i].href);
             }
             return urls;
+        }
+        ;
+
+        // Renders the replies, if any
+        Bark.prototype.renderReplies = function () {
+            var where = $('modal-replies');
+            for (var i = 0; i < this.replies.length; i++) {
+                var e = this.replies[i];
+                var b = new Bark(e);
+                b.render(where);
+            }
         };
 
         // Renders the bark on the screen
-        Bark.prototype.render = function () {
+        Bark.prototype.render = function (where) {
+            if (where == null)
+                where = $('new-bark');
 
             var who = this;
             var t = data.barktemplate;
@@ -508,10 +610,12 @@ function Timeline() {
                     who.rebark();
                 } else if (hasClass(e.target, 'user-image')) { // open profile
                     who.openOwner();
+                } else {
+                    who.openBark();
                 }
             };
             this.registerElement(ele);
-            $('new-bark').insertAdjacentElement('afterend', ele);
+            where.insertAdjacentElement('afterend', ele);
 
             this.updateStatus();
             this.setContent(details['content']);
@@ -523,4 +627,3 @@ function Timeline() {
     }
     ;
 }
-;

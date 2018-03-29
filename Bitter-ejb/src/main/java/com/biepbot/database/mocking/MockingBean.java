@@ -87,6 +87,14 @@ public class MockingBean
             Thread.sleep(2);
             bie.bark("AAAAA");
             
+            Thread.sleep(2);
+            bie.getBarks().get(4).replyTo(kez, "@biepbot but why tho");
+            Thread.sleep(2);
+            bie.getBarks().get(4).replyTo(aba, "@biepbot yeah, why");
+            Thread.sleep(2);
+            bie.getBarks().get(4).replyTo(mem, "@biepbot oh my god lol");
+            Thread.sleep(2);
+            bie.getBarks().get(4).replyTo(goo, "@biepbot are you alright?");
             bie.getBarks().get(4).like(bie);
             
             // attach likes

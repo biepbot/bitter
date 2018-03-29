@@ -5,6 +5,7 @@
  */
 package com.biepbot.session.base;
 
+import com.biepbot.base.User;
 import com.biepbot.database.PersistentUnit;
 import javax.ejb.EJB;
 
@@ -30,5 +31,14 @@ public abstract class BeanHandler
     @Deprecated
     public BeanHandler(boolean useLocal) {
         pu = new PersistentUnit(useLocal);
+    }
+    
+    /**
+     *
+     * @param username the username of the user
+     * @return a specific username
+     */
+    public User getUser(String username) {
+        return pu.<User>getObjectFromQuery(User.class, "name", username, false);
     }
 }

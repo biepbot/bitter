@@ -41,17 +41,23 @@ public class RESTResponseFilter implements ContainerResponseFilter
 
         // IF GET
         Method m = resourceInfo.getResourceMethod();
-        if (m.getName().equals("getLikedBy") || m.getName().equals("getRebarkedBy"))
+        if (m != null)
         {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            if (m.getName() != null)
+            {
+                if (m.getName().equals("getLikedBy") || m.getName().equals("getRebarkedBy"))
+                {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                    sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-            Calendar expires = Default.now();
-            expires.add(Calendar.HOUR, 1);
+                    Calendar expires = Default.now();
+                    expires.add(Calendar.HOUR, 1);
 
-            //Tue, 24 Apr 2018 13:31:12 GMT
-            String date = sdf.format(expires.getTime());
-            responseCtx.getHeaders().add("Expires", date);
+                    //Tue, 24 Apr 2018 13:31:12 GMT
+                    String date = sdf.format(expires.getTime());
+                    responseCtx.getHeaders().add("Expires", date);
+                }
+            }
         }
     }
 }
