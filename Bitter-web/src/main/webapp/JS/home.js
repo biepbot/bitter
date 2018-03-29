@@ -129,8 +129,6 @@ function hideIfDarkener(e) {
     if (e.target.id === 'darkener') {
         hide(e.target);
         removeClass(document.body, 'no-overflow');
-        var parent = $('modal-bark-replies');
-        parent.innerHTML = '<div id="modal-replies"></div>'; // clear
     }
 }
 
@@ -473,6 +471,8 @@ function Timeline() {
         Bark.prototype.openBark = function () {
             // reload old state of object
             restoreElement($('darkener'));
+            var parent = $('modal-bark-replies');
+            parent.innerHTML = '<div id="modal-replies"></div>'; // clear
 
             this.loadBark();
 
