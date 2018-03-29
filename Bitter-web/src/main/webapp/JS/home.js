@@ -407,7 +407,7 @@ function Timeline() {
             img.src = this.details.poster.avatar;
 
             var cnt = $('modal-bark-content');
-            cnt.innerHTML = this.content;
+            cnt.innerHTML = this.element.getElementsByClassName('bark-content')[0].innerHTML;
 
             var use = $('modal-bark-username');
             use.innerHTML = this.details.poster.name;
