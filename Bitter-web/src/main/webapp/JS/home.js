@@ -299,9 +299,9 @@ function Timeline() {
                     var who = this;
                     for (var i = 0; i < urls.length; i++) {
                         var u = urls[i];
-                        getPreview(u, function (e, succ) {
-                            if (succ) {
-                                who.loadPreviewFromJSON(e, u);
+                        getPreview(u, function (e) {
+                            if (e.success) {
+                                who.loadPreview(e, u);
                             }
                             who.isLoadingPreview = false;
                         });
@@ -560,8 +560,7 @@ function Timeline() {
         };
 
         // Wrapper function for loading preview from JSON data
-        Bark.prototype.loadPreviewFromJSON = function (json, url) {
-            json = JSON.parse(json);
+        Bark.prototype.loadPreview = function (json, url) {
             this.addPreview(url, json.title, json.description, json.image, json.url);
         };
 

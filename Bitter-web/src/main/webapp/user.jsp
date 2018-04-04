@@ -1,6 +1,6 @@
 <%-- 
-    Document   : home
-    Created on : 01-Mar-2018, 15:47:19
+    Document   : user
+    Created on : Mar 30, 2018, 12:14:41 PM
     Author     : Rowan
 --%>
 
@@ -177,6 +177,6 @@
                 </div>
             </div>
             <script async src="JS/home.js"></script>
-            <script async src="JS/preview.min.js"></script>
     </body>
 </html>
+

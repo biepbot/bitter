@@ -171,25 +171,6 @@ function elementFromString(htmlString) {
 function escapeRegExp(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
-function getPreview(url, callback, keyind) {
-    var keys = ['5abcdc48048aa19df34e5a4cbdb9c7a41acd3fbd71222',
-        '5abcc3fa4ca406792ca026fefaf3a63297638dca900e9',
-        '5abcdc4a46cbb8b4a91fc31792de78bf05bd0e87a23df'];
-    if (keyind == null)
-        keyind = 0;
-    var key = keys[keyind];
-
-    var callurl = 'http://api.linkpreview.net/?key=' + key + '&q=' + url;
-    call('GET', callurl, null, function (e, succ) {
-        if (succ) {
-            callback(e, succ);
-        } else {
-            keyind++;
-            if (keyind < keys.length)
-                getPreview(url, callback, keyind);
-        }
-    });
-}
 
 // GENERAL FUNCTIONS //
 var els = [];
