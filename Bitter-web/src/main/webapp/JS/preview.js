@@ -69,12 +69,9 @@
 
     RichPreview = function (dom, url) {
         if (!(dom instanceof HTMLElement)) {
-            // destroy src to prevent image loading
-            dom = dom.replace(/src=/g , 'srca=');
+            // todo: destroy src to prevent image loading
             
-            // destroy script to prevent scripts running
-            dom = dom.replace(/<script>/g , '<no>');
-            dom = dom.replace(/<\/script>/g , '</no>');
+            // todo: destroy script to prevent scripts running
             
             var div = document.createElement('div');
             div.innerHTML = dom;
@@ -116,7 +113,6 @@
             var imgUrl = get('meta[property="og:image"]', 'content') ||
                     get('meta[name="og:image"]', 'content') ||
                     get('meta[name=image]', 'content') ||
-                    get('img[srca]', 'srca') ||
                     get('img[src]', 'src');
 
             // Ensure absolute url

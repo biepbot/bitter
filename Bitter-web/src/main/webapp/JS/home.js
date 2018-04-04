@@ -527,6 +527,7 @@ function Timeline() {
 
         // Add rich text preview
         Bark.prototype.addPreview = function (original, title, desc, image, url) {
+            if (!title && !desc && !image) return;
             var c = this.element.getElementsByClassName('bark-content')[0];
             var original2 = original.replace(/\/+$/, "");
 
@@ -541,20 +542,25 @@ function Timeline() {
             div.href = url;
             addClass(div, 'rich-preview');
 
+            title = title || url;
             var t = document.createElement('p');
             t.innerHTML = title;
             div.appendChild(t);
 
-            var d = document.createElement('p');
-            d.innerHTML = desc;
-            div.appendChild(d);
+            if (!!desc) {
+                var d = document.createElement('p');
+                d.innerHTML = desc;
+                div.appendChild(d);
+            }
 
-            var div2 = document.createElement('div');
-            var i = document.createElement('img');
-            i.src = image;
-            addClass(div2, 'preview-image');
-            div2.appendChild(i);
-            div.appendChild(div2);
+            if (!!image) {
+                var div2 = document.createElement('div');
+                var i = document.createElement('img');
+                i.src = image;
+                addClass(div2, 'preview-image');
+                div2.appendChild(i);
+                div.appendChild(div2);
+            }
 
             c.insertAdjacentElement('beforeend', div);
         };

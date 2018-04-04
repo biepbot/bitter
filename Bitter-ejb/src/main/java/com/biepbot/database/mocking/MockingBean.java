@@ -85,8 +85,12 @@ public class MockingBean
             Thread.sleep(2);
             goo.bark("Just like sharks, lol!");
             Thread.sleep(2);
-            bie.bark("AAAAA");
+            bie.bark("Me right now https://media1.tenor.com/images/2815a1387cab3e4d3d73417199ba2fae/tenor.gif");
             
+            Thread.sleep(2);
+            goo.bark("I just used google for the first time!! it's amazing!!!! http://google.com ");
+            Thread.sleep(2);
+            aba.bark("Biep's site is amazeballs lol http://biepbot.com");
             Thread.sleep(2);
             bie.getBarks().get(4).replyTo(kez, "@biepbot but why tho");
             Thread.sleep(2);
