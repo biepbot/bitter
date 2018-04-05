@@ -57,7 +57,7 @@
                 callback(ret);
             }
         };
-        x.open('POST', 'api/website/string', true);
+        x.open('POST', root + 'api/website/string', true);
         x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         // set the request

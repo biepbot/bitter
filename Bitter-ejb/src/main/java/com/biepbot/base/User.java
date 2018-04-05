@@ -13,6 +13,7 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -78,7 +79,7 @@ public class User implements Serializable
     /**
      * The user's followers
      */
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "follower_user",
                joinColumns = @JoinColumn(name = "user_id"),
                inverseJoinColumns = @JoinColumn(name = "follower_id")
@@ -88,7 +89,7 @@ public class User implements Serializable
     /**
      * The user's blocked users
      */
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<User> blockedUsers;
 
     @Column(nullable = false)
@@ -388,6 +389,10 @@ public class User implements Serializable
 
     public void unRebark(Bark b)
     {
+        if (!b.getPoster().name.equals(name)) {
+            // only delete from barks if it's not yours
+            this.barks.remove(b);
+        }
         this.rebarks.remove(b);
     }
 }

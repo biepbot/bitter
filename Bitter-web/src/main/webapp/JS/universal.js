@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+var root = '/Bitter-web/';
 // Api call method
 function apicall(method, url, callback, data)
 {
     var tries = 0;
     function t() {
-        call(method, url, data, function (e, success) {
+        call(method, root + url, data, function (e, success) {
             if (success) {
                 e = JSON.parse(e);
                 callback(e);

@@ -12,6 +12,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -66,16 +67,16 @@ public class Bark implements Serializable, Comparable<Bark>
      */
     private String content;
     
-    @ManyToMany(mappedBy = "rebarks")
+    @ManyToMany(mappedBy = "rebarks", fetch = FetchType.LAZY)
     private List<User> rebarkers;
     
-    @ManyToMany(mappedBy = "likes")
+    @ManyToMany(mappedBy = "likes", fetch = FetchType.LAZY)
     private List<User> likers;
     
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Bark repliedTo;
     
-    @OneToMany(mappedBy = "repliedTo", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "repliedTo", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<Bark> replies;
     
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -135,8 +136,9 @@ public class Bark implements Serializable, Comparable<Bark>
     public Bark replyTo(User replied, String reply)
     {
         Bark b = new Bark(replied, reply);
-        b.repliedTo = this;
+        b.setRepliedTo(this);
         replies.add(b);
+        replied.getBarks().add(b);
         return b;
     }
 

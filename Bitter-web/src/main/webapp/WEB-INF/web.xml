@@ -21,7 +21,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>users</servlet-name>
-        <url-pattern>/users/*</url-pattern>
+        <url-pattern>*.usp</url-pattern>
     </servlet-mapping>
     
     <!-- session config -->

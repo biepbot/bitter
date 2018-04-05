@@ -10,20 +10,20 @@
     <head>
         <title>Bitter. We know we had to do it to them.</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <link rel="stylesheet" href="CSS/fa/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="CSS/universal.min.css" />
-        <link rel="stylesheet" href="CSS/user.css" />
-        <script src="JS/universal.min.js"></script>
+        <link rel="stylesheet" href="/Bitter-web/CSS/fa/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/Bitter-web/CSS/universal.min.css" />
+        <link rel="stylesheet" href="/Bitter-web/CSS/user.css" />
+        <script src="/Bitter-web/JS/universal.min.js"></script>
 
-        <link rel="shortcut icon" type="image/png" href="IMG/bitter-logo.png"/>
+        <link rel="shortcut icon" type="image/png" href="/Bitter-web/IMG/bitter-logo.png"/>
     </head>
     <header>
         <div class="limit-3">
-            <div class="link active"><img class="logo" src='IMG/bitter-logo.png' alt=''/><a href="#">Home</a></div>
-            <div class="link"><a href="/notifications.jsp">Notifications</a></div>
+            <div class="link active"><img class="logo" src='/Bitter-web/IMG/bitter-logo.png' alt=''/><a href="#">Home</a></div>
+            <div class="link"><a href="/Bitter-web/notifications.jsp">Notifications</a></div>
             <div class="link right"><a href="#">Bark</a></div>
-            <div class="link right"><a href="/profile.jsp">Profile</a></div>
-            <div class="link right search"><a href="/search.jsp">Search Bitter</a></div>
+            <div class="link right"><a href="/Bitter-web/profile.jsp">Profile</a></div>
+            <div class="link right search"><a href="/Bitter-web/search.jsp">Search Bitter</a></div>
         </div>
     </header>
     <body>
@@ -176,7 +176,8 @@
                     </div>
                 </div>
             </div>
-            <script async src="JS/home.js"></script>
+            <script async src="/Bitter-web/JS/home.js"></script>
+            <script async src="/Bitter-web/JS/preview.min.js"></script>
     </body>
 </html>
 

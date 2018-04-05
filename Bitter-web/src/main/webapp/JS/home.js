@@ -315,7 +315,7 @@ function Timeline() {
             var usernames = /@[a-zA-Z0-9]{0,}/g;
             content = content.replace(usernames, function (user) {
                 user = user.replace('@', '');
-                return '<a href="users/' + user + '.jsp">@' + user + '</a>';
+                return '<a href="users/' + user + '.usp">@' + user + '</a>';
             });
             return content;
         };
@@ -363,7 +363,7 @@ function Timeline() {
             // Check if the logged in user is following them, and adjust the follow button accordingly
             var profile = $('visit_user');
             var followbtn = $('follow_btn');
-            profile.href = 'users/' + n + '.jsp';
+            profile.href = 'users/' + n + '.usp';
             if (you) {
                 hide(followbtn);
                 profile.innerHTML = 'Visit your profile';

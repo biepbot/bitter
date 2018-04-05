@@ -53,18 +53,18 @@ public class TestBarkBean
     {
         db.save(a);
         // Have this user create a bunch of barks;
-        addBark(tb+" fish1", true, false);
-        addBark(tb+" fish2", false, true);
-        addBark(tb+" fish3 @" + tu, false, true);
-        
+        addBark(tb + " fish1", true, false);
+        addBark(tb + " fish2", false, true);
+        addBark(tb + " fish3 @" + tu, false, true);
+
         // This one is relatively trending
-        addBark(tb+" fish4 @" + tu, true, true);
-        
-        addBark(tb+" fish5", false, false);
-        addBark(tb+" fish6", false, false);
-        addBark(tb+" fish7", false, false);
-        addBark(tb+" fish8", false, false);
-        addBark(tb+" fish9", false, false);
+        addBark(tb + " fish4 @" + tu, true, true);
+
+        addBark(tb + " fish5", false, false);
+        addBark(tb + " fish6", false, false);
+        addBark(tb + " fish7", false, false);
+        addBark(tb + " fish8", false, false);
+        addBark(tb + " fish9", false, false);
         db.update(a);
     }
 
@@ -75,13 +75,14 @@ public class TestBarkBean
         {
             db.delete(b);
         }
+        db.delete(a);
     }
 
     private void addBark(String context, boolean like, boolean rebark)
     {
         Bark b = new Bark(a, context);
         a.rebark(b);                    // non contextual add
-        
+
         if (like)
         {
             b.like(a);
@@ -90,7 +91,7 @@ public class TestBarkBean
         {
             b.rebark(a);
         }
-        
+
         db.save(b);
         testBarks.add(b);
     }
@@ -121,6 +122,57 @@ public class TestBarkBean
     }
 
     @Test
+    public void fishyCase()
+    {
+        List<Bark> shouldBeOnTL = new ArrayList<>();
+        List<Bark> shouldNotBeOnTL = new ArrayList<>();
+        
+        /*
+         * test case where a user creates several fishy barks
+         * where his timeline is kept up to date
+        */
+        // cases where the amount of barks increases:
+            // bark
+            // rebark
+            // reply
+        
+        // timeline should contain
+            // rebarks
+            // barks
+            // no replies
+
+        // create barks
+        // bark
+        int c = a.getBark_count();
+        a.bark("I love fish");              // Tell them. Tell them how much you love fish.
+        shouldBeOnTL.add(a.getLastBark());  // should be on TL
+        int newc = a.getBark_count();
+        Assert.assertTrue(newc - 1 == c);
+
+        // rebark
+        c = a.getBark_count();
+        a.rebark(testBarks.get(0));         // rebark fish bark
+        shouldBeOnTL.add(a.getLastBark());  // should be on TL
+        newc = a.getBark_count();
+        Assert.assertTrue(newc - 1 == c);
+
+        // reply
+        c = a.getBark_count();
+        testBarks.get(0).replyTo(a, "where's my fish???");
+        shouldNotBeOnTL.add(a.getLastBark()); // should NOT be on TL
+        newc = a.getBark_count();
+        Assert.assertTrue(newc - 1 == c);
+        
+        // update for TL
+        db.update(a);
+        
+        // verify timeline
+        List<Bark> tl = ubean.getUserTimeline(tu);
+        Assert.assertTrue(tl.containsAll(shouldBeOnTL));        // TL contains: fish barks
+        Assert.assertFalse(tl.containsAll(shouldNotBeOnTL));    // TL does not contain: fish replies
+    }
+
+    @Test
     public void getSearch()
     {
 
@@ -137,7 +189,7 @@ public class TestBarkBean
         * 6. limit - amount
          */
         Map<String, String> params = new HashMap<>();
-        params.put("content", tb+" fish8");
+        params.put("content", tb + " fish8");
         List<Bark> barks = bbean.getSearchResult(params);
         Assert.assertEquals(1, barks.size()); // I only have one tweet with this
 

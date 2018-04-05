@@ -11,10 +11,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.ws.rs.core.Response;
@@ -63,16 +61,26 @@ public class UserBeanHandler extends BeanHandler
      */
     public List<Bark> getUserTimeline(String username) {
         // todo: optimise
+        // get barks from following
+        // get rebarks from following
+        // but no replies
         User u = getUser(username);
         
         List<User> following = u.getFollowing();
-        Set<Bark> tl = new HashSet<>();
+        List<Bark> tl = new ArrayList<>(); // accept doubles for rebarks - list, not a set
         for (User ur : following) 
         {
             tl.addAll(ur.getBarks());
         }
         tl.addAll(u.getBarks());
-        List<Bark> ret = new ArrayList<>(tl);
+        
+        // Filter out replies
+        List<Bark> ret = new ArrayList<>();
+        for (Bark b : tl) {
+            if (b.getRepliedTo() == null) {
+                ret.add(b);
+            }
+        }
         Collections.sort(ret);
         return ret;
     }
