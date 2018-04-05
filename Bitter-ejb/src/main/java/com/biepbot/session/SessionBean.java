@@ -6,70 +6,148 @@
 package com.biepbot.session;
 
 import com.biepbot.base.User;
+import com.biepbot.database.DB;
+import com.biepbot.session.base.UserBeanHandler;
+import com.biepbot.session.security.EasySecurity;
 import java.io.Serializable;
-import java.util.UUID;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.SessionScoped;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
  * @author Rowan
  */
-@SessionScoped
-@Path("/sessions")
+@Stateless
+@Produces(
+        {
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+        })
+@Path("/auth")
 public class SessionBean implements Serializable
 {
-    private User user;
-    private String OATH;
-    
+    @EJB
+    private UserBeanHandler bbh;
+
+    @EJB
+    private DB db;
+
+    @GET
+    @Path("ping")
+    @EasySecurity(requiresUser = true)
+    public String ping()
+    {
+        return "alive";
+    }
+
+    @GET
+    @Path("whoami")
+    public User who(@Context HttpServletRequest req)
+    {
+        return (User)req.getSession().getAttribute("user");
+    }
+
     /**
      *
      * @param username
      * @param password
-     * @return logs a user in and returns a OATH code
+     * @param req
+     * @return accepted or refused
      */
     @POST
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/logon")
-    public String logon(@QueryParam("username") String username, @QueryParam("password") String password) {
-        // TODO
-        // verify
-        // get from database if possible
-        user = new User(username);
-        UUID uuid = UUID.randomUUID();
-        OATH = uuid.toString();
-        return OATH;
+    public Response logon(@FormParam("username") String username, @FormParam("password") String password, @Context HttpServletRequest req)
+    {
+        Object o = req.getSession().getAttribute("user");
+        // not logged in
+        if (o == null)
+        {
+            User u = bbh.getUser(username);
+            if (u != null)
+            {
+                if (u.getPassword().equals(password))
+                {
+                    req.getSession().setAttribute("user", u);
+                    return Response.accepted(u).build();
+                }
+            }
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+        return Response.ok(o).build();
     }
-    
+
     /**
      *
+     * @param req
+     * @return success or failure
      */
     @POST
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/logout")
-    public void logout() {
-        user = null;
-        OATH = null;
+    public Response logout(@Context HttpServletRequest req)
+    {
+        Object o = req.getSession().getAttribute("user");
+        // not logged in
+        if (o != null)
+        {
+            req.getSession().setAttribute("user", null);
+            req.getSession().invalidate();
+            o = null;
+        }
+        return Response.ok(o).build();
     }
-    
+
     /**
      *
-     * @return logs a user in and returns a OATH code
+     * @param username
+     * @param password
+     * @param email
+     * @param req
+     * @return success or failure
      */
     @POST
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("/whoami")
-    public String getOATH() {
-        return OATH;
-    }
-    
-    @PreDestroy
-    public void cleanUp() {
-        logout();
+    @Path("/register")
+    public Response register(@FormParam("username") String username, @FormParam("password") String password, @FormParam("email") String email, @Context HttpServletRequest req)
+    {
+        if (password == null || username == null || email == null)
+        {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        String resp = "OK";
+        if (username.length() < 3)
+        {
+            resp = "Username was shorter than three characters";
+        }
+        if (password.length() < 5)
+        { // validate on other fields
+            resp = "Password was shorter than five characters";
+        }
+        // todo: 
+        // verify mail
+        // send email
+        // finish up user
+
+        User n = bbh.getUser(username);
+        if (n != null)
+        {
+            resp = "Username was already taken";
+        }
+
+        if (resp.equals("OK"))
+        {
+            n = new User(username, email);
+            n.setPassword(password);
+            db.save(n);
+            return logon(username, password, req);
+        }
+        return Response.status(Response.Status.NOT_ACCEPTABLE).entity(resp).build();
     }
 }

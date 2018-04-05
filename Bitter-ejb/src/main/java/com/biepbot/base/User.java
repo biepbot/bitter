@@ -40,6 +40,9 @@ public class User implements Serializable
     @Column(nullable = false, unique = true, length = 50)
     private String name;
 
+    @Column(nullable = false)
+    private String password;
+
     /**
      * Tweets of a user
      */
@@ -123,6 +126,13 @@ public class User implements Serializable
         this.rebarks = new ArrayList<>();
         this.likes = new ArrayList<>();
         this.name = name;
+        this.password = "";
+    }
+
+    public User(String name, String email)
+    {
+        this(name);
+        this.email = email;
     }
 
     public boolean follow(User user)
@@ -140,6 +150,17 @@ public class User implements Serializable
     {
         this.following.remove(user);
         user.followers.remove(this);
+    }
+
+    @XmlTransient
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public void setPassword(String password)
+    {
+        this.password = password;
     }
 
     /**
@@ -389,7 +410,8 @@ public class User implements Serializable
 
     public void unRebark(Bark b)
     {
-        if (!b.getPoster().name.equals(name)) {
+        if (!b.getPoster().name.equals(name))
+        {
             // only delete from barks if it's not yours
             this.barks.remove(b);
         }
