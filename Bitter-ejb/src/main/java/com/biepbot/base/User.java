@@ -5,6 +5,7 @@
  */
 package com.biepbot.base;
 
+import com.biepbot.session.security.base.ESUser;
 import com.biepbot.utils.Validator;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "Account")
-public class User implements Serializable
+public class User implements Serializable, ESUser
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -300,6 +301,7 @@ public class User implements Serializable
     }
 
     @XmlTransient
+    @Override
     public Role getPrivilege()
     {
         return privilege;
@@ -416,5 +418,11 @@ public class User implements Serializable
             this.barks.remove(b);
         }
         this.rebarks.remove(b);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "User{" + "name=" + name + ", privilege=" + privilege + ", bio=" + bio + ", location=" + location + ", color=" + color + ", email=" + email + ", avatar=" + avatar + '}';
     }
 }

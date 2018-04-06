@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.biepbot.session.security;
+package com.biepbot.session.security.annotations.interceptors;
 
-import com.biepbot.base.Role;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -29,7 +28,7 @@ public @interface EasySecurity {
      * @return the roles that have access
      */
     @Nonbinding
-    public Role[] grantedRoles() default {};
+    public String[] grantedRoles() default {};
     
     /**
      * Whether a user is required. Is overridden if granted roles has any value

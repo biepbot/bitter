@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.biepbot.base;
+package com.biepbot.session.security.example;
 
 import com.biepbot.session.security.base.ESRole;
 
@@ -11,14 +11,14 @@ import com.biepbot.session.security.base.ESRole;
  *
  * @author Rowan
  */
-public enum Role implements ESRole
+public enum ESDefaultRole implements ESRole
 {
     user("user"),
     admin("admin");
 
     public String value;
     
-    Role(String value) {
+    ESDefaultRole(String value) {
         this.value = value;
     }
     

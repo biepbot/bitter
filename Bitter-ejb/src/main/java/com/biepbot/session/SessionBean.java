@@ -8,10 +8,14 @@ package com.biepbot.session;
 import com.biepbot.base.User;
 import com.biepbot.database.DB;
 import com.biepbot.session.base.UserBeanHandler;
-import com.biepbot.session.security.EasySecurity;
+import com.biepbot.session.security.annotations.inject.CurrentESUser;
+import com.biepbot.session.security.annotations.interceptors.EasySecurity;
+import com.biepbot.session.security.auth.ESAuth;
+import com.biepbot.session.security.base.ESUser;
 import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -34,6 +38,10 @@ import javax.ws.rs.core.Response;
 @Path("/auth")
 public class SessionBean implements Serializable
 {
+    @Inject
+    @CurrentESUser
+    private ESUser currentUser;
+
     @EJB
     private UserBeanHandler bbh;
 
@@ -45,14 +53,8 @@ public class SessionBean implements Serializable
     @EasySecurity(requiresUser = true)
     public String ping()
     {
-        return "alive";
-    }
-
-    @GET
-    @Path("whoami")
-    public User who(@Context HttpServletRequest req)
-    {
-        return (User)req.getSession().getAttribute("user");
+        ESUser who = currentUser;
+        return who.toString();
     }
 
     /**
@@ -75,7 +77,7 @@ public class SessionBean implements Serializable
             {
                 if (u.getPassword().equals(password))
                 {
-                    req.getSession().setAttribute("user", u);
+                    ESAuth.logon(req, u);
                     return Response.accepted(u).build();
                 }
             }
@@ -93,15 +95,11 @@ public class SessionBean implements Serializable
     @Path("/logout")
     public Response logout(@Context HttpServletRequest req)
     {
-        Object o = req.getSession().getAttribute("user");
-        // not logged in
-        if (o != null)
-        {
-            req.getSession().setAttribute("user", null);
-            req.getSession().invalidate();
-            o = null;
+
+        if (ESAuth.logout(req)) {
+            return Response.ok("Logged out").build();
         }
-        return Response.ok(o).build();
+        return Response.ok("No user was logged in").build();
     }
 
     /**
