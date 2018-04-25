@@ -15,12 +15,16 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import javax.ws.rs.core.Response;
 
 /**
  *
  * @author Rowan
  */
+@Named(value="userBeanHandler")
+@RequestScoped
 @Stateful
 public class UserBeanHandler extends BeanHandler
 {

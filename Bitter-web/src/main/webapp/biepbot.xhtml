@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Timeline</title>
+        <link href="CSS/JSF/universal.css" type="text/css" rel="stylesheet"/>
+    </h:head>
+    <h:body>
+        <h1>Biepbot's Timeline</h1>
+        <h:dataTable value="#{userBeanHandler.getUserTimeline('biepbot')}" var="response">
+            <h:column>
+                <f:facet name="header">Bark time</f:facet>
+                <h:outputText value="#{response.posttime.time}">
+                    <f:convertDateTime type="both" dateStyle="long" />
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Barker</f:facet>
+                <h:outputText value="#{response.poster.name}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">Bark</f:facet>
+                <h:outputText value="#{response.content}" />
+            </h:column>
+        </h:dataTable>
+    </h:body>
+</html>
+

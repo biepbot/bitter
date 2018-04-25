@@ -12,7 +12,6 @@ import java.io.File;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -28,7 +27,6 @@ import javax.ws.rs.core.Response;
  * @author Rowan
  */
 @Stateless
-@Named
 @Produces(
         {
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON

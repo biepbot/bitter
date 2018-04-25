@@ -68,7 +68,7 @@ public class SessionBean implements Serializable
     @Path("/logon")
     public Response logon(@FormParam("username") String username, @FormParam("password") String password, @Context HttpServletRequest req)
     {
-        Object o = req.getSession().getAttribute("user");
+        Object o = req.getSession().getAttribute("ESuser");
         // not logged in
         if (o == null)
         {

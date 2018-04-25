@@ -12,7 +12,6 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
-import javax.inject.Named;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -24,7 +23,6 @@ import javax.ws.rs.core.MediaType;
  * @author Rowan
  */
 @Stateless
-@Named
 @Produces(
         {
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON

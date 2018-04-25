@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.Response;
 
@@ -22,10 +21,7 @@ import javax.ws.rs.core.Response;
 @Interceptor
 @EasySecurity
 public class ESInterceptor
-{
-    @Inject
-    private HttpServletRequest context;
-    
+{    
     @Inject
     @CurrentESUser
     private ESUser u;
