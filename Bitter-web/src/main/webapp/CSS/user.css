@@ -381,6 +381,7 @@ a.rich-preview:hover {
 .rich-preview img {
     display: block;
     margin: auto;
+	max-width: 100%;
 }
 .preview-image {
     background: #fff;

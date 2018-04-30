@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="CSS/universal.min.css" />
         <link rel="stylesheet" href="CSS/user.css" />
         <script src="JS/universal.min.js"></script>
+        <script src="JS/lib/sockets.min.js"></script>
 
         <link rel="shortcut icon" type="image/png" href="IMG/bitter-logo.png"/>
     </head>

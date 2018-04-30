@@ -162,7 +162,16 @@ loadUser(null, 'test-');
 // manages barks
 function Timeline() {
     // fields
+    var met = this;
     this.barks = [];
+    this.socket = new MessageSocket('localhost:8080/Bitter-web/actions/bark');
+    this.socket.addEventListener('message', function(e) {
+        // load bark
+        var b = JSON.parse(e.data);
+        b = new Bark(b);
+        met.addBark(b);
+        b.flash();
+    });
 
     Timeline.prototype.load = function () {
         var me = this;
@@ -182,17 +191,10 @@ function Timeline() {
 
     Timeline.prototype.bark = function (msg) {
         var d = "bark=" + msg;
-        var me = this;
         call('POST', 'api/users/' + data.user.name + '/bark', d, function (e, success) {
             if (success) {
-                var bark = new Bark(JSON.parse(e));
-                me.addBark(bark);
-                var b = $('barks_count');
-                var amount = b.innerHTML;
-                amount++;
-                b.innerHTML = amount;
-                flash(b);
-                bark.flash();
+                var bark = JSON.parse(e);
+                met.socket.send(bark);
             } else {
                 // show error?
                 console.log(e);
