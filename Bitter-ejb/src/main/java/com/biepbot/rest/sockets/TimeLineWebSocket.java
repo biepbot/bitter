@@ -7,6 +7,8 @@ package com.biepbot.rest.sockets;
 
 import com.biepbot.rest.sockethandlers.TimeLineSessionHandler;
 import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -27,17 +29,24 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint("/actions/bark")
 public class TimeLineWebSocket
 {
+    private static final Logger LOG = Logger.getLogger(TimeLineWebSocket.class.getName());
+
     @Inject
     TimeLineSessionHandler sessionhandler;
-    
+
     @OnMessage
     public void handleMessage(String message, Session session)
     {
-        try (JsonReader reader = Json.createReader(new StringReader(message))) {
+        try (JsonReader reader = Json.createReader(new StringReader(message)))
+        {
             JsonObject jsonMessage = reader.readObject();
-            
+
             // Send to everyone connected
             sessionhandler.send(jsonMessage);
+        }
+        catch (Exception ex)
+        {
+            LOG.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -50,6 +59,8 @@ public class TimeLineWebSocket
     @OnError
     public void onError(Throwable error)
     {
+        LOG.log(Level.SEVERE, "Error");
+        error.printStackTrace();
     }
 
     @OnOpen
@@ -57,6 +68,5 @@ public class TimeLineWebSocket
     {
         sessionhandler.connect(session);
     }
-    
-    
+
 }
