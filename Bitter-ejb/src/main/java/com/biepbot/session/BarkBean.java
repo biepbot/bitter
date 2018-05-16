@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -35,7 +35,7 @@ import javax.ws.rs.core.UriInfo;
  *
  * @author Rowan
  */
-@Stateless
+@Stateful
 @Produces(
         {
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON

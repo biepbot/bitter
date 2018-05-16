@@ -14,7 +14,7 @@ import com.biepbot.session.security.base.ESUser;
 import java.io.File;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Rowan
  */
-@Stateless
+@Stateful
 @Produces(
         {
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON

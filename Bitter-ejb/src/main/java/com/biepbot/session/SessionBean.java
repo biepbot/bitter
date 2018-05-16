@@ -11,10 +11,14 @@ import com.biepbot.session.base.UserBeanHandler;
 import com.biepbot.session.security.annotations.inject.CurrentESUser;
 import com.biepbot.session.security.annotations.interceptors.EasySecurity;
 import com.biepbot.session.security.auth.ESAuth;
+import static com.biepbot.session.security.auth.ESAuth.key;
 import com.biepbot.session.security.base.ESUser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import java.io.Serializable;
+import java.util.Date;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
@@ -30,7 +34,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Rowan
  */
-@Stateless
+@Stateful
 @Produces(
         {
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
@@ -77,11 +81,21 @@ public class SessionBean implements Serializable
             {
                 if (u.getPassword().equals(password))
                 {
+                    long now = new Date().getTime();
+                    long validity = 3 * 24 * 60 * 60 * 1000;
+
                     // log the user in
                     ESAuth.logon(req, u);
-                    
-                    // return approved status
-                    return Response.accepted(u).build();
+
+                    // generate key
+                    String compactJws = Jwts.builder()
+                            .setSubject(u.getName())
+                            .signWith(SignatureAlgorithm.HS512, key)
+                            .setExpiration(new Date(now + validity))
+                            .compact();
+
+                    // return approved status and give auth header
+                    return Response.accepted(u).header("Authorization", compactJws).build();
                 }
             }
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
@@ -99,7 +113,8 @@ public class SessionBean implements Serializable
     public Response logout(@Context HttpServletRequest req)
     {
 
-        if (ESAuth.logout(req)) {
+        if (ESAuth.logout(req))
+        {
             return Response.ok("Logged out").build();
         }
         return Response.ok("No user was logged in").build();

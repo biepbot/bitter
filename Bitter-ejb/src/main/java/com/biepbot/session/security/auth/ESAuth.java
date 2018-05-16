@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
  */
 public class ESAuth
 {
+    public static String key = "SH928PPl-SJoin";
 
     /**
      * Registers a user as logged in

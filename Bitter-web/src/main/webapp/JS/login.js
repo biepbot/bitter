@@ -13,14 +13,16 @@ function login(e) {
     var u = $('username').value;
     var p = $('password').value;
     
-    call('POST', 'api/auth/logon', 'username=' + u + '&password=' + p, function (e, success) {
+    call('POST', 'api/auth/logon', 'username=' + u + '&password=' + p, function (e, success, x) {
         if (!success) {
             show($('login-fail')); // Could not log in
             return;
         }
         if (e.indexOf('401') === -1) {
             // logon
-            location.href = 'home.jsp';
+            sessionStorage.setItem('AUTH', x.getResponseHeader('authorization'));
+            sessionStorage.setItem('USER', u);
+            location.href = 'homeang.html';
         } else {
             show($('login-fail')); // Could not log in
         }

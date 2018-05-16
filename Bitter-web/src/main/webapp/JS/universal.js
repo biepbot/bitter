@@ -149,7 +149,7 @@ function call(type, url, data, callback, form) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && (xmlHttp.status >= 200 && xmlHttp.status < 300))
         {
-            callback(xmlHttp.responseText, true);
+            callback(xmlHttp.responseText, true, xmlHttp);
         } else if (xmlHttp.readyState === 4 && xmlHttp.status !== 200) {
             callback(xmlHttp, false);
         }
