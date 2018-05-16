@@ -8,20 +8,26 @@ package com.biepbot.session;
 import com.biepbot.base.Bark;
 import com.biepbot.base.User;
 import com.biepbot.session.base.BarkBeanHandler;
+import com.biepbot.session.security.annotations.inject.CurrentESUser;
+import com.biepbot.session.security.annotations.interceptors.EasySecurity;
+import com.biepbot.session.security.base.ESUser;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 /**
@@ -37,6 +43,10 @@ import javax.ws.rs.core.UriInfo;
 @Path("/barks")
 public class BarkBean
 {
+    @Inject
+    @CurrentESUser
+    private ESUser me;
+    
     @EJB
     private BarkBeanHandler bbh;
 
@@ -126,11 +136,15 @@ public class BarkBean
      * @return the replies to this bark
      */
     @POST
+    @EasySecurity(requiresUser = true)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Path("/{bark}/replyAs/{username}")
     public Bark replyTo(@PathParam("bark") String barkID, @PathParam("username") String username, @FormParam("content") String content)
     {
-        // todo: JAAS
+        if (!username.equals(me.getName())) {
+            throw new NotAuthorizedException(Response.status(403));
+        }
+        
         return bbh.replyTo(barkID, username, content);
     }
 

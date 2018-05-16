@@ -16,4 +16,6 @@ import javax.enterprise.inject.Model;
 public interface ESUser
 {
     public ESRole getPrivilege(); 
+
+    public String getName();
 }

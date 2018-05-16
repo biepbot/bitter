@@ -8,13 +8,18 @@ package com.biepbot.session;
 import com.biepbot.base.Bark;
 import com.biepbot.base.User;
 import com.biepbot.session.base.UserBeanHandler;
+import com.biepbot.session.security.annotations.inject.CurrentESUser;
+import com.biepbot.session.security.annotations.interceptors.EasySecurity;
+import com.biepbot.session.security.base.ESUser;
 import java.io.File;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -34,6 +39,10 @@ import javax.ws.rs.core.Response;
 @Path("/users")
 public class UserBean
 {
+    @Inject
+    @CurrentESUser
+    private ESUser me;
+    
     @EJB
     private UserBeanHandler bbh;
 
@@ -56,9 +65,13 @@ public class UserBean
      * @return 
      */
     @POST
+    @EasySecurity(requiresUser = true)
     @Path("/{username}/follow/{other}")
     public String followUser(@PathParam("username") String username, @PathParam("other") String other)
     {
+        if (!username.equals(me.getName())) {
+            throw new NotAuthorizedException(Response.status(403));
+        }
         User u = bbh.getUser(username);
         User them = bbh.getUser(other);
         u.follow(them);
@@ -78,6 +91,9 @@ public class UserBean
     @Path("/{username}/unfollow/{other}")
     public String unfollowUser(@PathParam("username") String username, @PathParam("other") String other)
     {
+        if (!username.equals(me.getName())) {
+            throw new NotAuthorizedException(Response.status(403));
+        }
         User u = bbh.getUser(username);
         User them = bbh.getUser(other);
         u.unfollow(them);
@@ -140,6 +156,7 @@ public class UserBean
      * @return whether the image could be updated or not
      */
     @POST
+    @EasySecurity(requiresUser = true)
     @Path("/{username}/avatar/upload")
     public Response updateAvatar(@PathParam("username") String username, @FormParam("avatar") File file)
     {
@@ -158,9 +175,14 @@ public class UserBean
      */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED) // default?
+    @EasySecurity(requiresUser = true)
     @Path("/{username}/bark")
     public Response bark(@PathParam("username") String username, @FormParam("bark") String tweet)
     {
+        if (!username.equals(me.getName())) {
+            throw new NotAuthorizedException(Response.status(403));
+        }
+        
         return bbh.bark(username, tweet);
     }
 
@@ -171,9 +193,14 @@ public class UserBean
      * @return error code
      */
     @POST
+    @EasySecurity(requiresUser = true)
     @Path("/{username}/like/{bark}")
     public Response like(@PathParam("username") String username, @PathParam("bark") String tweet)
     {
+        if (!username.equals(me.getName())) {
+            throw new NotAuthorizedException(Response.status(403));
+        }
+        
         return bbh.like(username, tweet);
     }
 
@@ -184,9 +211,14 @@ public class UserBean
      * @return error code
      */
     @POST
+    @EasySecurity(requiresUser = true)
     @Path("/{username}/rebark/{bark}")
     public Response rebark(@PathParam("username") String username, @PathParam("bark") String tweet)
     {
+        if (!username.equals(me.getName())) {
+            throw new NotAuthorizedException(Response.status(403));
+        }
+        
         return bbh.rebark(username, tweet);
     }
 
