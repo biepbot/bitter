@@ -147,7 +147,7 @@ function call(type, url, data, callback, form) {
     var xmlHttp = new XMLHttpRequest();
     //xmlHttp.withCredentials = true;
     xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+        if (xmlHttp.readyState === 4 && (xmlHttp.status >= 200 && xmlHttp.status < 300))
         {
             callback(xmlHttp.responseText, true);
         } else if (xmlHttp.readyState === 4 && xmlHttp.status !== 200) {

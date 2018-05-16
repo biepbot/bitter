@@ -5,15 +5,17 @@
  */
 package com.biepbot.rest.sockets;
 
+import com.biepbot.base.User;
+import com.biepbot.rest.sockethandlers.GetHttpSessionConfigurator;
 import com.biepbot.rest.sockethandlers.TimeLineSessionHandler;
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.servlet.http.HttpSession;
+import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -25,14 +27,12 @@ import javax.websocket.server.ServerEndpoint;
  *
  * @author Rowan
  */
-@ApplicationScoped
-@ServerEndpoint("/actions/bark")
+@ServerEndpoint(value = "/actions/bark", configurator = GetHttpSessionConfigurator.class)
 public class TimeLineWebSocket
 {
     private static final Logger LOG = Logger.getLogger(TimeLineWebSocket.class.getName());
 
-    @Inject
-    TimeLineSessionHandler sessionhandler;
+    TimeLineSessionHandler sessionhandler = TimeLineSessionHandler.getInstance();
 
     @OnMessage
     public void handleMessage(String message, Session session)
@@ -42,7 +42,7 @@ public class TimeLineWebSocket
             JsonObject jsonMessage = reader.readObject();
 
             // Send to everyone connected
-            sessionhandler.send(jsonMessage);
+            sessionhandler.send(jsonMessage, session);
         }
         catch (Exception ex)
         {
@@ -64,9 +64,11 @@ public class TimeLineWebSocket
     }
 
     @OnOpen
-    public void open(Session session)
+    public void open(Session session, EndpointConfig config)
     {
-        sessionhandler.connect(session);
+        HttpSession httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
+        User u = (User)httpSession.getAttribute("ESUser");
+        sessionhandler.connect(session, u);
     }
 
 }

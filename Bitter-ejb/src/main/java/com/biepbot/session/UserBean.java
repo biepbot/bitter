@@ -164,7 +164,7 @@ public class UserBean
         if (ret == 0) {
             return Response.ok().build();
         } 
-        return Response.status(500, String.valueOf(ret)).build();
+        return Response.status(500).build();
     }
 
     /**

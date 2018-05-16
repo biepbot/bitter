@@ -77,7 +77,10 @@ public class SessionBean implements Serializable
             {
                 if (u.getPassword().equals(password))
                 {
+                    // log the user in
                     ESAuth.logon(req, u);
+                    
+                    // return approved status
                     return Response.accepted(u).build();
                 }
             }

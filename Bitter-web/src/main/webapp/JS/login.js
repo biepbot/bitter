@@ -10,13 +10,19 @@ window.onload = function (e) {
 
 function login(e) {
     e.preventDefault();
-    var data = new FormData(document.getElementById('form-signin'));
-    call('POST', 'j_security_check', data, function (e, success) {
+    var u = $('username').value;
+    var p = $('password').value;
+    
+    call('POST', 'api/auth/logon', 'username=' + u + '&password=' + p, function (e, success) {
+        if (!success) {
+            show($('login-fail')); // Could not log in
+            return;
+        }
         if (e.indexOf('401') === -1) {
             // logon
-            //window.location = 'home.jsp';
+            location.href = 'home.jsp';
         } else {
             show($('login-fail')); // Could not log in
         }
-    });
+    }, 1);
 }

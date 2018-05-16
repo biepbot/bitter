@@ -119,7 +119,7 @@ public class UserBeanHandler extends BeanHandler
             pu.save(u);
             return Response.ok(u.getLastBark()).build();
         }
-        return Response.status(500, "No tweet could be made").build();
+        return Response.status(500).build();
     }
     
     /**

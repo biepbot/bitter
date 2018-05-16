@@ -127,7 +127,7 @@ public class User implements Serializable, ESUser
         this.rebarks = new ArrayList<>();
         this.likes = new ArrayList<>();
         this.name = name;
-        this.password = "";
+        this.password = "password";
     }
 
     public User(String name, String email)

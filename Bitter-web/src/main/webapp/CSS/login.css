@@ -11,7 +11,8 @@ and open the template in the editor.
 /* ================== */
 .front-card {
     margin: auto;
-    width: 1000px;
+    width: 100%;
+    max-width: 1000px;
     height: 400px;
     margin-top : 75px;
     padding: 25px;
@@ -28,11 +29,13 @@ and open the template in the editor.
     top: 50px;
 }
 .intro-card {
-    width: 600px;
+    max-width: 600px;
+    width: 60%;
     height: 305px;
 }
 .form-card {
-    width: 285px;
+    max-width: 285px;
+    width: 40%;
     right: 0;
 }
 
