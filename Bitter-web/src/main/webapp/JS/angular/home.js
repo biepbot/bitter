@@ -13,9 +13,6 @@ if (!me) {
 homeApp.config(['$httpProvider', function($httpProvider) {
   $httpProvider.defaults.withCredentials = true;
   $httpProvider.defaults.headers.common['Authorization'] = sessionStorage.getItem('AUTH');
-  
-  sessionStorage.setItem('USER', null);
-  sessionStorage.setItem('AUTH', null);
 }]);
 
 homeApp.filter('reverse', function () {
