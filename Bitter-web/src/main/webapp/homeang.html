@@ -84,14 +84,14 @@
                     </div>
                     <br/>
 
-                    <div ng-click="bark.open()" class="bark flash {{bark.bitten}} {{bark.barked}}" ng-repeat="bark in bc.timeline| reverse">
-                        <div class="bark-image">
+                    <div class="bark flash {{bark.bitten}} {{bark.barked}}" ng-repeat="bark in bc.timeline| reverse">
+                        <div class="bark-image" ng-click="bark.openOwner()">
                             <img src="{{bark.poster.avatar}}" class="user-image" alt=""/>
                         </div>
                         <div class="bark-user">
                             {{bark.poster.name}}
                         </div>
-                        <div class="bark-content">
+                        <div ng-click="bark.open()" class="bark-content">
                             {{value(bark.content)}}
                         </div>
                         <div class="bark-interact">
@@ -106,7 +106,7 @@
             </div>
             <!-- darkener -->
             <div id="darkener" class="darkener hidden" ng-click="bc.hide()">
-                <div id="modal-owner" class="modal">
+                <div id="modal-owner" class="modal hidden" ng-model="barkowner">
                     <!-- user pop-up -->
 
                     <div class="small-box">
@@ -119,24 +119,24 @@
                             </div>
                             <div class="profile-info">
                                 <div class="username">
-                                    <img id="modal-owneravatar" src="" alt=""/>
+                                    <img id="modal-owneravatar" src="{{barkowner.poster.avatar}}" alt=""/>
                                     <div>
-                                        <p id="modal-ownerusername"></p>
-                                        <p id="modal-ownerat_username">@</p>
+                                        <p id="modal-ownerusername">{{barkowner.poster.name}}</p>
+                                        <p id="modal-ownerat_username">@{{barkowner.poster.name}}</p>
                                     </div>
                                 </div>
                                 <div class="major">
                                     <div class="minor">
                                         <p>Barks</p>
-                                        <p class="flash" id="modal-ownerbarks_count">0</p>
+                                        <p class="flash" id="modal-ownerbarks_count">{{barkowner.poster.bark_count}}</p>
                                     </div>
                                     <div class="minor">
                                         <p>Following</p>
-                                        <p id="modal-ownerfollowing_count">0</p>
+                                        <p id="modal-ownerfollowing_count">{{barkowner.poster.following_count}}</p>
                                     </div>
                                     <div class="minor">
                                         <p>Followers</p>
-                                        <p id="modal-ownerfollower_count" class="flash">0</p>
+                                        <p id="modal-ownerfollower_count" class="flash">{{barkowner.poster.follower_count}}</p>
                                     </div>
                                 </div>
                                 <div class="divider"></div>
@@ -153,7 +153,7 @@
                                 <div class="divider"></div>
                                 <div class="major major-2">
                                     <div class="minor">
-                                        <a id="visit_user" href="users/">Visit their profile</a>
+                                        <a id="visit_user" href="users/{{barkowner.poster.name}}.usp">Visit their profile</a>
                                     </div>
                                     <div class="minor">
                                         <div id="follow_btn" class="btn">LOADING</div>
@@ -164,15 +164,17 @@
                     </div>
                 </div>
 
-                <div id="big-bark" class="modal">
+                <div id="big-bark" class="modal hidden" ng-model="bigbark">
                     <!-- bark pop-up -->
                     <div id="modal-bark-bark" class="bark">
                         <div class="bark-image">
-                            <img id="modal-avatar" class="user-image"/>
+                            <img id="modal-avatar" class="user-image" src="{{bigbark.poster.avatar}}"/>
                         </div>
                         <div id="modal-bark-username" class="bark-user">
+                            {{bigbark.poster.name}}
                         </div>
                         <div id="modal-bark-content" class="bark-content">
+                            {{bigbark.content}}
                         </div>
                         <div class="bark-interact">
                             <li>

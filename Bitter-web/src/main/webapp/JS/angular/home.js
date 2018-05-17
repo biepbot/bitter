@@ -10,10 +10,10 @@ if (!me) {
     location.href = 'index.jsp';
 }
 
-homeApp.config(['$httpProvider', function($httpProvider) {
-  $httpProvider.defaults.withCredentials = true;
-  $httpProvider.defaults.headers.common['Authorization'] = sessionStorage.getItem('AUTH');
-}]);
+homeApp.config(['$httpProvider', function ($httpProvider) {
+        $httpProvider.defaults.withCredentials = true;
+        $httpProvider.defaults.headers.common['Authorization'] = sessionStorage.getItem('AUTH');
+    }]);
 
 homeApp.filter('reverse', function () {
     return function (items) {
@@ -21,7 +21,7 @@ homeApp.filter('reverse', function () {
     };
 });
 
-homeApp.controller('mainController', ['$http', '$websocket', function ($http, $websocket) {
+homeApp.controller('mainController', ['$http', '$websocket', '$scope', function ($http, $websocket, $scope) {
         var bc = this;
 
         // variables
@@ -53,6 +53,8 @@ homeApp.controller('mainController', ['$http', '$websocket', function ($http, $w
                     // add functions
                     e.bite = like;
                     e.bark = rebark;
+                    e.open = openBark;
+                    e.openOwner = openOwner;
 
                     // check if liked or rebarked
                     $http({
@@ -96,7 +98,32 @@ homeApp.controller('mainController', ['$http', '$websocket', function ($http, $w
                 // show error
             });
         };
+        bc.hide = function () {
+            var d = angular.element(document.getElementById('darkener'));
+            var d1 = angular.element(document.getElementById('big-bark'));
+            var d2 = angular.element(document.getElementById('modal-owner'));
+            d.addClass('hidden');
+            d1.addClass('hidden');
+            d2.addClass('hidden');
+        };
 
+        // BARK FUNCTIONS
+        var openOwner = function () {
+            $scope.barkowner = this;
+
+            var d = angular.element(document.getElementById('darkener'));
+            var d1 = angular.element(document.getElementById('modal-owner'));
+            d.removeClass('hidden');
+            d1.removeClass('hidden');
+        };
+        var openBark = function () {
+            $scope.bigbark = this;
+
+            var d = angular.element(document.getElementById('darkener'));
+            var d1 = angular.element(document.getElementById('big-bark'));
+            d.removeClass('hidden');
+            d1.removeClass('hidden');
+        };
         var like = function () {
             var b = this;
             // get id somehow.
@@ -139,7 +166,7 @@ homeApp.controller('barkController', ['$scope', function ($scope) {
 
             // turn any accepted html values back
             //value = getTrustedHtml(value);
-            
+
             return value;
         };
     }]);
