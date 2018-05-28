@@ -94,14 +94,14 @@ public class BarkBeanHandler extends BeanHandler
      * @param barkID
      * @return who liked this bark
      */
-    public List<User> getLikes(String barkID)
+    public Set<User> getLikes(String barkID)
     {
         Bark b = getBark(barkID);
         if (b != null)
         {
             return b.getLikers();
         }
-        return new ArrayList<>();
+        return new HashSet<>();
     }
 
     /**
@@ -115,7 +115,7 @@ public class BarkBeanHandler extends BeanHandler
         Bark b = getBark(barkID);
         if (b != null)
         {
-            List<User> users = b.getLikers();
+            Set<User> users = b.getLikers();
             for (User u : users)
             {
                 if (u.getName().equals(user))
@@ -138,7 +138,7 @@ public class BarkBeanHandler extends BeanHandler
         Bark b = getBark(barkID);
         if (b != null)
         {
-            List<User> users = b.getRebarkers();
+            Set<User> users = b.getRebarkers();
             for (User u : users)
             {
                 if (u.getName().equals(user))
@@ -155,14 +155,14 @@ public class BarkBeanHandler extends BeanHandler
      * @param barkID
      * @return who rebarked this bark
      */
-    public List<User> getRebarks(String barkID)
+    public Set<User> getRebarks(String barkID)
     {
         Bark b = getBark(barkID);
         if (b != null)
         {
             return b.getRebarkers();
         }
-        return new ArrayList<>();
+        return new HashSet<>();
     }
 
     /**
@@ -170,14 +170,14 @@ public class BarkBeanHandler extends BeanHandler
      * @param barkID
      * @return the replies to this bark
      */
-    public List<Bark> getReplies(String barkID)
+    public Set<Bark> getReplies(String barkID)
     {
         Bark b = getBark(barkID);
         if (b != null)
         {
             return b.getReplies();
         }
-        return new ArrayList<>();
+        return new HashSet<>();
     }
 
     /**

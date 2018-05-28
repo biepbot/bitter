@@ -7,15 +7,18 @@ package com.biepbot.session;
 
 import com.biepbot.base.Bark;
 import com.biepbot.base.User;
+import com.biepbot.rest.hats.HATInterceptor;
 import com.biepbot.session.base.UserBeanHandler;
 import com.biepbot.session.security.annotations.inject.CurrentESUser;
 import com.biepbot.session.security.annotations.interceptors.EasySecurity;
 import com.biepbot.session.security.base.ESUser;
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -34,9 +37,10 @@ import javax.ws.rs.core.Response;
 @Stateful
 @Produces(
         {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
         })
 @Path("/users")
+@Interceptors({HATInterceptor.class})
 public class UserBean
 {
     @Inject
@@ -121,7 +125,7 @@ public class UserBean
      */
     @GET
     @Path("/{username}/followers")
-    public List<User> getUserFollowers(@PathParam("username") String username)
+    public Set<User> getUserFollowers(@PathParam("username") String username)
     {
         return getUser(username).getFollowers();
     }
@@ -145,7 +149,7 @@ public class UserBean
      */
     @GET
     @Path("/{username}/likes")
-    public List<Bark> getUserLikes(@PathParam("username") String username)
+    public Set<Bark> getUserLikes(@PathParam("username") String username)
     {
         return getUser(username).getLikes();
     }
@@ -158,13 +162,9 @@ public class UserBean
     @POST
     @EasySecurity(requiresUser = true)
     @Path("/{username}/avatar/upload")
-    public Response updateAvatar(@PathParam("username") String username, @FormParam("avatar") File file)
+    public void updateAvatar(@PathParam("username") String username, @FormParam("avatar") File file)
     {
         int ret = bbh.updateAvatar(username, file);
-        if (ret == 0) {
-            return Response.ok().build();
-        } 
-        return Response.status(500).build();
     }
 
     /**
@@ -177,7 +177,7 @@ public class UserBean
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED) // default?
     @EasySecurity(requiresUser = true)
     @Path("/{username}/bark")
-    public Response bark(@PathParam("username") String username, @FormParam("bark") String tweet)
+    public Bark bark(@PathParam("username") String username, @FormParam("bark") String tweet)
     {
         if (!username.equals(me.getName())) {
             throw new NotAuthorizedException(Response.status(403));
@@ -195,7 +195,7 @@ public class UserBean
     @POST
     @EasySecurity(requiresUser = true)
     @Path("/{username}/like/{bark}")
-    public Response like(@PathParam("username") String username, @PathParam("bark") String tweet)
+    public String like(@PathParam("username") String username, @PathParam("bark") String tweet)
     {
         if (!username.equals(me.getName())) {
             throw new NotAuthorizedException(Response.status(403));
@@ -213,7 +213,7 @@ public class UserBean
     @POST
     @EasySecurity(requiresUser = true)
     @Path("/{username}/rebark/{bark}")
-    public Response rebark(@PathParam("username") String username, @PathParam("bark") String tweet)
+    public String rebark(@PathParam("username") String username, @PathParam("bark") String tweet)
     {
         if (!username.equals(me.getName())) {
             throw new NotAuthorizedException(Response.status(403));
@@ -242,7 +242,7 @@ public class UserBean
      */
     @GET
     @Path("/{username}/barks")
-    public List<Bark> getUserBarks(@PathParam("username") String username)
+    public Set<Bark> getUserBarks(@PathParam("username") String username)
     {
         return getUser(username).getBarks();
     }
@@ -254,7 +254,7 @@ public class UserBean
      */
     @GET
     @Path("/{username}/following")
-    public List<User> getUserFollowing(@PathParam("username") String username)
+    public Set<User> getUserFollowing(@PathParam("username") String username)
     {
         return getUser(username).getFollowing();
     }

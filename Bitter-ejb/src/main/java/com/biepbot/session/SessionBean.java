@@ -7,6 +7,7 @@ package com.biepbot.session;
 
 import com.biepbot.base.User;
 import com.biepbot.database.DB;
+import com.biepbot.rest.hats.HATInterceptor;
 import com.biepbot.session.base.UserBeanHandler;
 import com.biepbot.session.security.annotations.inject.CurrentESUser;
 import com.biepbot.session.security.annotations.interceptors.EasySecurity;
@@ -20,9 +21,12 @@ import java.util.Date;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -40,6 +44,7 @@ import javax.ws.rs.core.Response;
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
         })
 @Path("/auth")
+@Interceptors({HATInterceptor.class})
 public class SessionBean implements Serializable
 {
     @Inject
@@ -98,7 +103,7 @@ public class SessionBean implements Serializable
                     return Response.accepted(u).header("Authorization", compactJws).build();
                 }
             }
-            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+            throw new NotAcceptableException();
         }
         return Response.ok(o).build();
     }
@@ -110,14 +115,12 @@ public class SessionBean implements Serializable
      */
     @POST
     @Path("/logout")
-    public Response logout(@Context HttpServletRequest req)
+    public void logout(@Context HttpServletRequest req)
     {
-
         if (ESAuth.logout(req))
         {
-            return Response.ok("Logged out").build();
+            // Logged out
         }
-        return Response.ok("No user was logged in").build();
     }
 
     /**
@@ -134,7 +137,7 @@ public class SessionBean implements Serializable
     {
         if (password == null || username == null || email == null)
         {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            throw new BadRequestException();
         }
 
         String resp = "OK";
@@ -164,6 +167,6 @@ public class SessionBean implements Serializable
             db.save(n);
             return logon(username, password, req);
         }
-        return Response.status(Response.Status.NOT_ACCEPTABLE).entity(resp).build();
+        throw new NotAcceptableException(resp);
     }
 }

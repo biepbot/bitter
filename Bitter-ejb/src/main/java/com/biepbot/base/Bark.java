@@ -5,11 +5,12 @@
  */
 package com.biepbot.base;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+import com.biepbot.rest.hats.POJO.HATObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -49,7 +50,7 @@ import javax.xml.bind.annotation.XmlTransient;
                         + "b.posttime <= convert(date,:before)")
        */ }
 )
-public class Bark implements Serializable, Comparable<Bark>
+public class Bark extends HATObject implements Comparable<Bark>
 {
     
     @Id
@@ -68,16 +69,16 @@ public class Bark implements Serializable, Comparable<Bark>
     private String content;
     
     @ManyToMany(mappedBy = "rebarks", fetch = FetchType.LAZY)
-    private List<User> rebarkers;
+    private Set<User> rebarkers;
     
     @ManyToMany(mappedBy = "likes", fetch = FetchType.LAZY)
-    private List<User> likers;
+    private Set<User> likers;
     
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Bark repliedTo;
     
     @OneToMany(mappedBy = "repliedTo", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    private List<Bark> replies;
+    private Set<Bark> replies;
     
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Calendar posttime;
@@ -89,16 +90,18 @@ public class Bark implements Serializable, Comparable<Bark>
     @Deprecated
     public Bark()
     {
+        super();
     }
     
     public Bark(User poster, String content)
     {
+        super();
         this.poster = poster;
         this.content = content;
         this.posttime = new GregorianCalendar();
-        rebarkers = new ArrayList<>();
-        likers = new ArrayList<>();
-        replies = new ArrayList<>();
+        rebarkers = new HashSet<>();
+        likers = new HashSet<>();
+        replies = new HashSet<>();
     }
 
     public String getContent()
@@ -143,13 +146,15 @@ public class Bark implements Serializable, Comparable<Bark>
     }
 
     @XmlTransient
-    public List<User> getRebarkers()
+    @JsonIgnore
+    public Set<User> getRebarkers()
     {
         return rebarkers;
     }
 
     @XmlTransient
-    public List<User> getLikers()
+    @JsonIgnore
+    public Set<User> getLikers()
     {
         return likers;
     }
@@ -170,12 +175,13 @@ public class Bark implements Serializable, Comparable<Bark>
     }
 
     @XmlTransient
-    public List<Bark> getReplies()
+    @JsonIgnore
+    public Set<Bark> getReplies()
     {
         return replies;
     }
 
-    public void setReplies(List<Bark> replies)
+    public void setReplies(Set<Bark> replies)
     {
         this.replies = replies;
     }
@@ -190,12 +196,12 @@ public class Bark implements Serializable, Comparable<Bark>
         this.content = content;
     }
 
-    public void setRebarkers(List<User> rebarkers)
+    public void setRebarkers(Set<User> rebarkers)
     {
         this.rebarkers = rebarkers;
     }
 
-    public void setLikers(List<User> likers)
+    public void setLikers(Set<User> likers)
     {
         this.likers = likers;
     }

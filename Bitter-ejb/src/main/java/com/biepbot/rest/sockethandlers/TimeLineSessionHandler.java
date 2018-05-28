@@ -8,8 +8,8 @@ package com.biepbot.rest.sockethandlers;
 import com.biepbot.base.SessionUser;
 import com.biepbot.base.User;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.JsonObject;
@@ -23,7 +23,7 @@ import javax.websocket.Session;
 // find out why applicationscoped here causes it to be null
 public class TimeLineSessionHandler
 {
-    protected final List<SessionUser> sessions = new ArrayList<>();
+    protected final Set<SessionUser> sessions = new HashSet<>();
 
     private TimeLineSessionHandler()
     {
@@ -61,7 +61,7 @@ public class TimeLineSessionHandler
         SessionUser su = null;
         for (SessionUser u : sessions)
         {
-            if (u.session.equals(session))
+            if (u.getSession().equals(session))
             {
                 su = u;
             }
@@ -96,7 +96,7 @@ public class TimeLineSessionHandler
         }
 
         // get their followers
-        List<User> followers = u.getFollowers();
+        Set<User> followers = u.getFollowers();
 
         for (SessionUser s : sessions)
         {

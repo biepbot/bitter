@@ -144,22 +144,23 @@ public class TestBarkBean
         // create barks
         // bark
         int c = a.getBark_count();
-        a.bark("I love fish");              // Tell them. Tell them how much you love fish.
-        shouldBeOnTL.add(a.getLastBark());  // should be on TL
+        Bark bbb = a.bark("I love fish");              // Tell them. Tell them how much you love fish.
+        shouldBeOnTL.add(bbb);  // should be on TL
         int newc = a.getBark_count();
         Assert.assertTrue(newc - 1 == c);
 
         // rebark
         c = a.getBark_count();
+        bbb = testBarks.get(0);
         a.rebark(testBarks.get(0));         // rebark fish bark
-        shouldBeOnTL.add(a.getLastBark());  // should be on TL
+        shouldBeOnTL.add(bbb);              // should be on TL
         newc = a.getBark_count();
-        Assert.assertTrue(newc - 1 == c);
+        Assert.assertTrue(newc - 0 == c);   // doesn't account for our total barks
 
         // reply
         c = a.getBark_count();
-        testBarks.get(0).replyTo(a, "where's my fish???");
-        shouldNotBeOnTL.add(a.getLastBark()); // should NOT be on TL
+        bbb = testBarks.get(0).replyTo(a, "where's my fish???");
+        shouldNotBeOnTL.add(bbb);           // should NOT be on TL
         newc = a.getBark_count();
         Assert.assertTrue(newc - 1 == c);
         

@@ -7,6 +7,7 @@ package com.biepbot.session;
 
 import com.biepbot.base.Bark;
 import com.biepbot.base.User;
+import com.biepbot.rest.hats.HATInterceptor;
 import com.biepbot.session.base.BarkBeanHandler;
 import com.biepbot.session.security.annotations.inject.CurrentESUser;
 import com.biepbot.session.security.annotations.interceptors.EasySecurity;
@@ -14,9 +15,11 @@ import com.biepbot.session.security.base.ESUser;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -38,9 +41,10 @@ import javax.ws.rs.core.UriInfo;
 @Stateful
 @Produces(
         {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
         })
 @Path("/barks")
+@Interceptors({HATInterceptor.class})
 public class BarkBean
 {
     @Inject
@@ -73,7 +77,7 @@ public class BarkBean
      */
     @GET
     @Path("/{bark}/likes")
-    public List<User> getLikes(@PathParam("bark") String barkID)
+    public Set<User> getLikes(@PathParam("bark") String barkID)
     {
         return bbh.getLikes(barkID);
     }
@@ -111,7 +115,7 @@ public class BarkBean
      */
     @GET
     @Path("/{bark}/rebarks")
-    public List<User> getRebarks(@PathParam("bark") String barkID)
+    public Set<User> getRebarks(@PathParam("bark") String barkID)
     {
         return bbh.getRebarks(barkID);
     }
@@ -123,7 +127,7 @@ public class BarkBean
      */
     @GET
     @Path("/{bark}/replies")
-    public List<Bark> getReplies(@PathParam("bark") String barkID)
+    public Set<Bark> getReplies(@PathParam("bark") String barkID)
     {
         return bbh.getReplies(barkID);
     }

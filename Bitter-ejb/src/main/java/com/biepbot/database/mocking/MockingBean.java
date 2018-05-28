@@ -68,52 +68,44 @@ public class MockingBean
             Thread.sleep(2);
             don.bark("Something. Sad!");
             Thread.sleep(2);
-            don.getBarks().get(0).rebark(bie);
             goo.bark("-10C inside, too! Everyone pack up before going anywhere!!!");
             Thread.sleep(2);
             bie.bark("When was the last time I had breakfast?");
             Thread.sleep(2);
-            sad.bark("If only there were emojies :joy: :sob:");
+            Bark emoji = sad.bark("If only there were emojies :joy: :sob:");
             Thread.sleep(2);
-            kez.bark("Everything is parodied today. It makes me want to paroDI--.. paroKMS.");
+            Bark parody = kez.bark("Everything is parodied today. It makes me want to paroDI--.. paroKMS.");
             Thread.sleep(2);
-            aba.bark("Anyone saw that new Black Panty movie?");
+            Bark cold = aba.bark("Anyone saw that new Black Panty movie?");
             Thread.sleep(2);
             bie.bark("I need more memes imo.");
             Thread.sleep(2);
             goo.bark("Hey everyone! I just noticed a new feature on Bitter.com, and it's totes awesome!");
             Thread.sleep(2);
-            goo.bark("Just like sharks, lol!");
+            Bark something = goo.bark("Just like sharks, lol!");
             Thread.sleep(2);
             bie.bark("Me right now https://media1.tenor.com/images/2815a1387cab3e4d3d73417199ba2fae/tenor.gif");
             
             Thread.sleep(2);
             goo.bark("I just used google for the first time!! it's amazing!!!! http://google.com ");
             Thread.sleep(2);
-            aba.bark("Biep's site is amazeballs lol http://biepbot.com");
+            Bark b = aba.bark("Biep's site is amazeballs lol http://biepbot.com");
             Thread.sleep(2);
-            bie.getBarks().get(4).replyTo(kez, "@biepbot but why tho");
+            b.replyTo(kez, "@biepbot but why tho");
             Thread.sleep(2);
-            bie.getBarks().get(4).replyTo(aba, "@biepbot yeah, why");
+            b.replyTo(aba, "@biepbot yeah, why");
             Thread.sleep(2);
-            bie.getBarks().get(4).replyTo(mem, "@biepbot oh my god lol");
+            b.replyTo(mem, "@biepbot oh my god lol");
             Thread.sleep(2);
-            bie.getBarks().get(4).replyTo(goo, "@biepbot are you alright?");
-            bie.getBarks().get(4).like(bie);
+            b.replyTo(goo, "@biepbot are you alright?");
+            b.like(bie);
             
             // attach likes
-            Bark parody = kez.getBarks().get(0);
             parody.like(bie);
             parody.rebark(bie);
-            
-            Bark emoji = sad.getBarks().get(0);
             emoji.like(bie);
-            
-            Bark cold = goo.getBarks().get(1);
             cold.like(bie);
             cold.rebark(bie);
-            
-            Bark something = don.getBarks().get(0);
             something.like(bie);
             
             // attach follows

@@ -13,11 +13,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import javax.ws.rs.core.Response;
 
 /**
  *
@@ -70,7 +70,7 @@ public class UserBeanHandler extends BeanHandler
         // but no replies
         User u = getUser(username);
         
-        List<User> following = u.getFollowing();
+        Set<User> following = u.getFollowing();
         List<Bark> tl = new ArrayList<>(); // accept doubles for rebarks - list, not a set
         for (User ur : following) 
         {
@@ -112,14 +112,14 @@ public class UserBeanHandler extends BeanHandler
      * @param tweet the tweet content
      * @return error code
      */
-    public Response bark(String username, String tweet) {
+    public Bark bark(String username, String tweet) {
         User u = getUser(username);
-        boolean succ = u.bark(tweet);
-        if (succ) {
+        Bark b = u.bark(tweet);
+        if (b != null) {
             pu.save(u);
-            return Response.ok(u.getLastBark()).build();
+            return b;
         }
-        return Response.status(500).build();
+        throw new InternalError("Could not create bark");
     }
     
     /**
@@ -128,7 +128,7 @@ public class UserBeanHandler extends BeanHandler
      * @param tweet the tweet content
      * @return error code
      */
-    public Response like(String username, String tweet) {
+    public String like(String username, String tweet) {
         User u = getUser(username);
         Bark b = bbean.getBark(tweet);
         boolean succ = b != null;
@@ -140,10 +140,9 @@ public class UserBeanHandler extends BeanHandler
                 u.addLike(b);
             }
             pu.save(u);
-            String response = liked ? "0" : "1";
-            return Response.ok().entity(response).build();
+            return liked ? "0" : "1";
         }
-        return Response.serverError().build();
+        throw new InternalError("Could not like bark");
     }
     
     /**
@@ -152,7 +151,7 @@ public class UserBeanHandler extends BeanHandler
      * @param tweet the tweet ID
      * @return error code
      */
-    public Response rebark(String username, String tweet) {
+    public String rebark(String username, String tweet) {
         User u = getUser(username);
         Bark b = bbean.getBark(tweet);
         boolean succ = b != null;
@@ -164,10 +163,9 @@ public class UserBeanHandler extends BeanHandler
                 u.rebark(b);
             }
             pu.save(u);
-            String response = liked ? "0" : "1";
-            return Response.ok().entity(response).build();
+            return liked ? "0" : "1";
         }
-        return Response.serverError().build();
+        throw new InternalError("Could not rebark bark");
     }
     
     /**

@@ -5,12 +5,14 @@
  */
 package com.biepbot.base;
 
+import com.biepbot.rest.hats.POJO.HATObject;
+import com.biepbot.rest.hats.annotations.HATLink;
+import com.biepbot.session.UserBean;
 import com.biepbot.session.security.base.ESUser;
 import com.biepbot.utils.Validator;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,14 +34,14 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "Account")
-public class User implements Serializable, ESUser
+public class User extends HATObject implements ESUser
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String name;
+    private String username;
 
     @Column(nullable = false)
     private String password;
@@ -48,7 +50,7 @@ public class User implements Serializable, ESUser
      * Tweets of a user
      */
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Bark> barks;
+    private Set<Bark> barks;
 
     /**
      * Likes of a user
@@ -58,7 +60,7 @@ public class User implements Serializable, ESUser
                joinColumns = @JoinColumn(name = "user_id"),
                inverseJoinColumns = @JoinColumn(name = "like_id")
     )
-    private List<Bark> likes;
+    private Set<Bark> likes;
 
     /**
      * Rebarks of a user of their own barks
@@ -68,7 +70,7 @@ public class User implements Serializable, ESUser
                joinColumns = @JoinColumn(name = "user_id"),
                inverseJoinColumns = @JoinColumn(name = "rebark_id")
     )
-    private List<Bark> rebarks;
+    private Set<Bark> rebarks;
 
     /**
      * The user's following
@@ -78,7 +80,7 @@ public class User implements Serializable, ESUser
                joinColumns = @JoinColumn(name = "user_id"),
                inverseJoinColumns = @JoinColumn(name = "follow_id")
     )
-    private List<User> following;
+    private Set<User> following;
 
     /**
      * The user's followers
@@ -88,13 +90,13 @@ public class User implements Serializable, ESUser
                joinColumns = @JoinColumn(name = "user_id"),
                inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
-    private List<User> followers;
+    private Set<User> followers;
 
     /**
      * The user's blocked users
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<User> blockedUsers;
+    private Set<User> blockedUsers;
 
     @Column(nullable = false)
     private Role privilege = Role.user;
@@ -116,17 +118,19 @@ public class User implements Serializable, ESUser
     @Deprecated
     public User()
     {
+        super();
     }
 
     public User(String name)
     {
-        this.barks = new ArrayList<>();
-        this.blockedUsers = new ArrayList<>();
-        this.followers = new ArrayList<>();
-        this.following = new ArrayList<>();
-        this.rebarks = new ArrayList<>();
-        this.likes = new ArrayList<>();
-        this.name = name;
+        super();
+        this.barks = new HashSet<>();
+        this.blockedUsers = new HashSet<>();
+        this.followers = new HashSet<>();
+        this.following = new HashSet<>();
+        this.rebarks = new HashSet<>();
+        this.likes = new HashSet<>();
+        this.username = name;
         this.password = "password";
     }
 
@@ -180,20 +184,15 @@ public class User implements Serializable, ESUser
      * @param content
      * @return
      */
-    public boolean bark(String content)
+    public Bark bark(String content)
     {
         Bark bark = new Bark(this, content);
         if (Validator.IsBarkProper(bark))
         {
             barks.add(bark);
-            return true;
+            return bark;
         }
-        return false;
-    }
-
-    public Bark getLastBark()
-    {
-        return barks.get(barks.size() - 1);
+        return null;
     }
 
     /**
@@ -214,40 +213,54 @@ public class User implements Serializable, ESUser
 
     public String getName()
     {
-        return name;
+        return username;
     }
 
     public void setName(String name)
     {
-        this.name = name;
+        this.username = name;
     }
 
     @XmlTransient
-    public List<Bark> getBarks()
+    @HATLink(bean = UserBean.class, path = "/{username}/barks")
+    public Set<Bark> getBarks()
     {
         return barks;
     }
 
+    /*
+        In theory, you want to define HATLinks elsewhere or dynamically. Example;
+        - automatically generate HATEOAS links from unique identifiers
+    
+        You could give the "getFollowing" the "following" identifier, and it'd automatically
+        loop through any bean to see if anything would match the identifier. Possibly
+        through another annotation that defines what they return.
+     */
     @XmlTransient
-    public List<User> getFollowing()
+    @HATLink(bean = UserBean.class, path = "/{username}/following")
+    @HATLink(bean = UserBean.class, path = "/{username}/follow/{other}", method = "POST")
+    @HATLink(bean = UserBean.class, path = "/{username}/unfollow/{other}", method = "POST")
+    public Set<User> getFollowing()
     {
         return following;
     }
 
     @XmlTransient
-    public List<User> getFollowers()
+    @HATLink(bean = UserBean.class, path = "/{username}/followers")
+    public Set<User> getFollowers()
     {
         return followers;
     }
 
     @XmlTransient
-    public List<User> getBlockedUsers()
+    public Set<User> getBlockedUsers()
     {
         return blockedUsers;
     }
 
     @XmlTransient
-    public List<Bark> getLikes()
+    @HATLink(bean = UserBean.class, path = "/{username}/likes")
+    public Set<Bark> getLikes()
     {
         return likes;
     }
@@ -333,7 +346,8 @@ public class User implements Serializable, ESUser
     }
 
     @XmlTransient
-    public List<Bark> getRebarks()
+    @HATLink(bean = UserBean.class, path = "/{username}/rebarks")
+    public Set<Bark> getRebarks()
     {
         return rebarks;
     }
@@ -348,32 +362,32 @@ public class User implements Serializable, ESUser
         this.email = Email;
     }
 
-    public void setBarks(List<Bark> barks)
+    public void setBarks(Set<Bark> barks)
     {
         this.barks = barks;
     }
 
-    public void setLikes(List<Bark> likes)
+    public void setLikes(Set<Bark> likes)
     {
         this.likes = likes;
     }
 
-    public void setRebarks(List<Bark> rebarks)
+    public void setRebarks(Set<Bark> rebarks)
     {
         this.rebarks = rebarks;
     }
 
-    public void setFollowing(List<User> following)
+    public void setFollowing(Set<User> following)
     {
         this.following = following;
     }
 
-    public void setFollowers(List<User> followers)
+    public void setFollowers(Set<User> followers)
     {
         this.followers = followers;
     }
 
-    public void setBlockedUsers(List<User> blockedUsers)
+    public void setBlockedUsers(Set<User> blockedUsers)
     {
         this.blockedUsers = blockedUsers;
     }
@@ -382,7 +396,7 @@ public class User implements Serializable, ESUser
     public int hashCode()
     {
         int hash = 5;
-        hash = 29 * hash + Objects.hashCode(this.name);
+        hash = 29 * hash + Objects.hashCode(this.username);
         return hash;
     }
 
@@ -402,7 +416,7 @@ public class User implements Serializable, ESUser
             return false;
         }
         final User other = (User) obj;
-        return Objects.equals(this.name, other.name);
+        return Objects.equals(this.username, other.username);
     }
 
     public void unLike(Bark b)
@@ -412,7 +426,7 @@ public class User implements Serializable, ESUser
 
     public void unRebark(Bark b)
     {
-        if (!b.getPoster().name.equals(name))
+        if (!b.getPoster().username.equals(username))
         {
             // only delete from barks if it's not yours
             this.barks.remove(b);
@@ -423,6 +437,6 @@ public class User implements Serializable, ESUser
     @Override
     public String toString()
     {
-        return "User{" + "name=" + name + ", privilege=" + privilege + ", bio=" + bio + ", location=" + location + ", color=" + color + ", email=" + email + ", avatar=" + avatar + '}';
+        return "User{" + "name=" + username + ", privilege=" + privilege + ", bio=" + bio + ", location=" + location + ", color=" + color + ", email=" + email + ", avatar=" + avatar + '}';
     }
 }

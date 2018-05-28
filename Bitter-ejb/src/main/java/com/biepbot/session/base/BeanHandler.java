@@ -39,6 +39,6 @@ public abstract class BeanHandler
      * @return a specific username
      */
     public User getUser(String username) {
-        return pu.<User>getObjectFromQuery(User.class, "name", username, false);
+        return pu.<User>getObjectFromQuery(User.class, "username", username, false);
     }
 }
