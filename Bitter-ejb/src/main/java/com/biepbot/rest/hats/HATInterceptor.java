@@ -13,11 +13,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
 
 /**
@@ -28,6 +31,9 @@ import javax.ws.rs.Path;
 public class HATInterceptor
 {
     private ObjectMapper mapper = new ObjectMapper();
+
+    @Inject
+    private HttpServletRequest request;
 
     public HATInterceptor()
     {
@@ -42,6 +48,14 @@ public class HATInterceptor
         if (ret instanceof List)
         {
             List<Object> al = (List) ret;
+            for (Object a : al)
+            {
+                parseObject(a);
+            }
+        }
+        if (ret instanceof Set)
+        {
+            Set<Object> al = (Set) ret;
             for (Object a : al)
             {
                 parseObject(a);
@@ -75,6 +89,7 @@ public class HATInterceptor
 
         for (Method m : ret.getClass().getMethods())
         {
+            //todo:
             // the point of these getters is that they are always XMLTransient / JSONIgnored
             Annotation[] annos = m.getAnnotations();
 
@@ -84,7 +99,7 @@ public class HATInterceptor
             for (HATLink l : ls)
             {
                 // Init
-                String path = "";
+                String path = request.getContextPath() + "/" + request.getServletPath() + "/";
 
                 // get bean
                 Class b = l.bean();
@@ -99,6 +114,9 @@ public class HATInterceptor
                 // replace any path parameters with field values
                 // ieg, {username} should be replaced by the "username" field
                 path = formatString(path, ret);
+                
+                // remove double slashes
+                path =path.replaceAll("//", "/");
 
                 // get method
                 Link link = new Link(path, l.method());
@@ -123,9 +141,13 @@ public class HATInterceptor
             {
                 String name = f.getName();
                 f.setAccessible(true);
-                String value = f.get(fieldsObject).toString();
-                // replace all fields
-                o = o.replace("{"+name+"}", value);
+                Object obj = f.get(fieldsObject);
+                if (obj != null)
+                {
+                    String value = obj.toString();
+                    // replace all fields
+                    o = o.replace("{" + name + "}", value);
+                }
             }
             catch (Exception ex)
             {

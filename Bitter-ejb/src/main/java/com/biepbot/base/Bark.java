@@ -6,7 +6,9 @@
 package com.biepbot.base;
 
 import com.biepbot.rest.hats.POJO.HATObject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.biepbot.rest.hats.annotations.HATLink;
+import com.biepbot.session.BarkBean;
+import com.biepbot.session.UserBean;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -124,18 +126,21 @@ public class Bark extends HATObject implements Comparable<Bark>
         return poster;
     }
     
+    @HATLink(bean = UserBean.class, path = "/{username}/like/{id}")
     public void like(User liked) 
     {
         likers.add(liked);
         liked.addLike(this);
     }
     
+    @HATLink(bean = UserBean.class, path = "/{username}/rebark/{id}")
     public void rebark(User rebarked) 
     {
         rebarkers.add(rebarked);
         rebarked.rebark(this);
     }
     
+    @HATLink(bean = BarkBean.class, path = "/{id}/replyAs/{username}", method = "POST")
     public Bark replyTo(User replied, String reply)
     {
         Bark b = new Bark(replied, reply);
@@ -146,14 +151,16 @@ public class Bark extends HATObject implements Comparable<Bark>
     }
 
     @XmlTransient
-    @JsonIgnore
+    @HATLink(bean = BarkBean.class, path = "/{id}/rebarks")
+    @HATLink(bean = BarkBean.class, path = "/{id}/rebarks/{username}")
     public Set<User> getRebarkers()
     {
         return rebarkers;
     }
 
     @XmlTransient
-    @JsonIgnore
+    @HATLink(bean = BarkBean.class, path = "/{id}/likes")
+    @HATLink(bean = BarkBean.class, path = "/{id}/likes/{username}")
     public Set<User> getLikers()
     {
         return likers;
@@ -175,7 +182,7 @@ public class Bark extends HATObject implements Comparable<Bark>
     }
 
     @XmlTransient
-    @JsonIgnore
+    @HATLink(bean = BarkBean.class, path = "/{id}/replies")
     public Set<Bark> getReplies()
     {
         return replies;

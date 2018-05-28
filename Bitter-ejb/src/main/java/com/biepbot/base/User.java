@@ -346,7 +346,6 @@ public class User extends HATObject implements ESUser
     }
 
     @XmlTransient
-    @HATLink(bean = UserBean.class, path = "/{username}/rebarks")
     public Set<Bark> getRebarks()
     {
         return rebarks;
