@@ -10,8 +10,11 @@ import com.biepbot.rest.hats.POJO.Link;
 import com.biepbot.rest.hats.annotations.HATLink;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -74,10 +77,9 @@ public class HATInterceptor
         {
             // the point of these getters is that they are always XMLTransient / JSONIgnored
             Annotation[] annos = m.getAnnotations();
-            
+
             //Annotation n = JsonIgnore.class.
             //annos[annos.length+1] = JsonIgnore;
-            
             HATLink[] ls = m.getAnnotationsByType(HATLink.class);
             for (HATLink l : ls)
             {
@@ -93,18 +95,44 @@ public class HATInterceptor
 
                 // get remainder of url
                 path += l.path();
-                
+
+                // replace any path parameters with field values
+                // ieg, {username} should be replaced by the "username" field
+                path = formatString(path, ret);
+
                 // get method
                 Link link = new Link(path, l.method());
 
                 // get method name
                 String key = downGrade(m.getName());
-                
+
                 // add to object
                 HATObject a = (HATObject) ret;
                 a.addLink(link, key);
             }
         }
+    }
+
+    private String formatString(String s, Object fieldsObject)
+    {
+        String o = s;
+        Field[] fields = fieldsObject.getClass().getDeclaredFields();
+        for (Field f : fields)
+        {
+            try
+            {
+                String name = f.getName();
+                f.setAccessible(true);
+                String value = f.get(fieldsObject).toString();
+                // replace all fields
+                o = o.replace("{"+name+"}", value);
+            }
+            catch (Exception ex)
+            {
+                Logger.getLogger(HATInterceptor.class.getName()).log(Level.WARNING, null, ex);
+            }
+        }
+        return o;
     }
 
     /**
@@ -114,7 +142,7 @@ public class HATInterceptor
      * @param string
      * @return
      */
-    private static String downGrade(String string)
+    private String downGrade(String string)
     {
         boolean firstword = false;
         boolean t = true;
