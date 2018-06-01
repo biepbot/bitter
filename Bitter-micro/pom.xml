@@ -8,11 +8,11 @@
     </parent>
 
     <groupId>com.biepbot</groupId>
-    <artifactId>Bitter-ear</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>ear</packaging>
+    <artifactId>Bitter-micro</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
 
-    <name>Bitter-ear</name>
+    <name>Bitter-micro</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,15 +43,22 @@
     <dependencies>
         <dependency>
             <groupId>com.biepbot</groupId>
-            <artifactId>Bitter-ejb</artifactId>
+            <artifactId>Bitter-ear</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <type>ejb</type>
+            <type>ear</type>
         </dependency>
         <dependency>
-            <groupId>com.biepbot</groupId>
-            <artifactId>Bitter-web</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <type>war</type>
+            <groupId>org.eclipse.microprofile</groupId>
+            <artifactId>microprofile</artifactId>
+            <version>1.3</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>fish.payara.extras</groupId>
+            <artifactId>payara-micro</artifactId>
+            <version>5.181</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>

@@ -8,6 +8,7 @@
     <name>Bitter</name>
     <modules>
         <module>Bitter-ear</module>
+        <module>Bitter-micro</module>
         <module>Bitter-web</module>
         <module>Bitter-ejb</module>
     </modules>
@@ -33,10 +34,10 @@
             <properties>
                 <JDBC_TYPE>JTA</JDBC_TYPE>
                 <JDBC_DRIVER>org.apache.derby.jdbc.ClientDriver</JDBC_DRIVER>
-                <JDBC_URL>jdbc:derby://localhost:1527/DERBY_bitter</JDBC_URL>
-                <JDBC_USER></JDBC_USER>
-                <JDBC_PASSWORD></JDBC_PASSWORD>
-                <JDBC_DATASOURCE>jdbc/__DERBY_bitter</JDBC_DATASOURCE>
+                <JDBC_URL>jdbc:derby://localhost:1527/sample</JDBC_URL>
+                <JDBC_USER>APP</JDBC_USER>
+                <JDBC_PASSWORD>APP</JDBC_PASSWORD>
+                <JDBC_DATASOURCE>java:comp/DefaultDataSource</JDBC_DATASOURCE>
                 <a>jta-data-source</a>
             </properties>
             <activation>
